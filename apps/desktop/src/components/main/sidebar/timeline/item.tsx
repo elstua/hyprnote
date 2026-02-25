@@ -32,7 +32,6 @@ import {
   TimelinePrecision,
 } from "../../../../utils/timeline";
 import { InteractiveButton } from "../../../interactive-button";
-import { SessionPreviewCard } from "../../../session-preview-card";
 
 export const TimelineItemComponent = memo(
   ({
@@ -125,7 +124,7 @@ function ItemBase({
         <div className="flex flex-col gap-0.5 flex-1 min-w-0">
           <div
             className={cn(
-              "text-sm font-normal truncate pointer-events-none",
+              "text-sm font-normal truncate",
               ignored && "line-through",
             )}
           >
@@ -426,24 +425,18 @@ const SessionItem = memo(
     );
 
     return (
-      <SessionPreviewCard
-        sessionId={sessionId}
-        side="right"
-        enabled={!selected}
-      >
-        <ItemBase
-          title={title}
-          displayTime={displayTime}
-          calendarId={calendarId}
-          showSpinner={showSpinner}
-          selected={selected}
-          multiSelected={multiSelected}
-          onClick={handleClick}
-          onCmdClick={handleCmdClick}
-          onShiftClick={handleShiftClick}
-          contextMenu={contextMenu}
-        />
-      </SessionPreviewCard>
+      <ItemBase
+        title={title}
+        displayTime={displayTime}
+        calendarId={calendarId}
+        showSpinner={showSpinner}
+        selected={selected}
+        multiSelected={multiSelected}
+        onClick={handleClick}
+        onCmdClick={handleCmdClick}
+        onShiftClick={handleShiftClick}
+        contextMenu={contextMenu}
+      />
     );
   },
 );

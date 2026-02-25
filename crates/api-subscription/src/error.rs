@@ -1,10 +1,17 @@
 use axum::{
+    Json,
     http::StatusCode,
     response::{IntoResponse, Response},
 };
+use serde::Serialize;
 use thiserror::Error;
 
 pub type Result<T> = std::result::Result<T, SubscriptionError>;
+
+#[derive(Debug, Serialize)]
+pub struct ErrorResponse {
+    pub error: String,
+}
 
 #[derive(Debug, Error)]
 pub enum SubscriptionError {
@@ -26,18 +33,28 @@ impl From<stripe::StripeError> for SubscriptionError {
 
 impl IntoResponse for SubscriptionError {
     fn into_response(self) -> Response {
-        let (status, code, message) = match self {
+        let error_code = match &self {
             Self::SupabaseRequest(msg) => {
-                (StatusCode::INTERNAL_SERVER_ERROR, "supabase_error", msg)
+                tracing::error!(error = %msg, "supabase_error");
+                sentry::capture_message(msg, sentry::Level::Error);
+                "supabase_error"
             }
-            Self::Stripe(msg) => (StatusCode::INTERNAL_SERVER_ERROR, "stripe_error", msg),
-            Self::Internal(msg) => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "internal_server_error",
-                msg,
-            ),
+            Self::Stripe(msg) => {
+                tracing::error!(error = %msg, "stripe_error");
+                sentry::capture_message(msg, sentry::Level::Error);
+                "stripe_error"
+            }
+            Self::Internal(msg) => {
+                tracing::error!(error = %msg, "internal_error");
+                sentry::capture_message(msg, sentry::Level::Error);
+                "internal_server_error"
+            }
         };
 
-        hypr_api_error::error_response(status, &code, &message)
+        let body = Json(ErrorResponse {
+            error: error_code.to_string(),
+        });
+
+        (StatusCode::INTERNAL_SERVER_ERROR, body).into_response()
     }
 }

@@ -543,7 +543,7 @@ async fn start_external_server<R: Runtime, T: Manager<R>>(
     let cmd_builder = external::CommandBuilder::new(move || {
         let mut cmd = app_handle
             .sidecar2()
-            .sidecar("char-sidecar-stt")?
+            .sidecar("hyprnote-sidecar-stt")?
             .args(["serve", "--any-token"]);
 
         #[cfg(debug_assertions)]

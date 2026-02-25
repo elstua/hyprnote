@@ -20,8 +20,6 @@ import {
   requiresEntitlement,
 } from "../shared/eligibility";
 import { listAnthropicModels } from "../shared/list-anthropic";
-import { listAzureAIModels } from "../shared/list-azure-ai";
-import { listAzureOpenAIModels } from "../shared/list-azure-openai";
 import {
   type InputModality,
   type ListModelsResult,
@@ -270,12 +268,6 @@ function useConfiguredMapping(): Record<string, ProviderStatus> {
             break;
           case "mistral":
             listModelsFunc = () => listMistralModels(baseUrl, apiKey);
-            break;
-          case "azure_openai":
-            listModelsFunc = () => listAzureOpenAIModels(baseUrl, apiKey);
-            break;
-          case "azure_ai":
-            listModelsFunc = () => listAzureAIModels(baseUrl, apiKey);
             break;
           case "ollama":
             listModelsFunc = () => listOllamaModels(baseUrl, apiKey);

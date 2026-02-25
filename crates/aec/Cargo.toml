@@ -4,14 +4,12 @@ version = "0.1.0"
 edition = "2024"
 
 [features]
-default = ["onnx", "128"]
-onnx = ["dep:hypr-onnx"]
+default = ["128"]
 128 = []
 256 = []
 512 = []
-
 [dependencies]
-hypr-onnx = { workspace = true, optional = true }
+hypr-onnx = { workspace = true }
 
 realfft = { workspace = true }
 
@@ -19,11 +17,9 @@ serde = { workspace = true }
 thiserror = { workspace = true }
 
 [dev-dependencies]
-approx = { workspace = true }
 criterion = { workspace = true }
 dasp = { workspace = true }
 hound = { workspace = true }
-hypr-audio-snapshot = { workspace = true }
 rodio = { workspace = true }
 
 [[bench]]

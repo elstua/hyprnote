@@ -2,18 +2,15 @@ use serde::{Serialize, ser::Serializer};
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-    #[cfg(feature = "onnx")]
     #[error(transparent)]
     HyprOnnxError(#[from] hypr_onnx::Error),
 
-    #[cfg(feature = "onnx")]
     #[error(transparent)]
     OrtError(#[from] hypr_onnx::ort::Error),
 
     #[error(transparent)]
     FftError(#[from] realfft::FftError),
 
-    #[cfg(feature = "onnx")]
     #[error(transparent)]
     ShapeError(#[from] hypr_onnx::ndarray::ShapeError),
 

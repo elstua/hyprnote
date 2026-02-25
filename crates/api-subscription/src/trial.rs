@@ -8,7 +8,7 @@ use hypr_analytics::{AnalyticsPayload, PropertiesPayload, ToAnalyticsPayload};
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
 
-use hypr_api_error::error_response;
+use crate::error::ErrorResponse;
 
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct StartTrialQuery {
@@ -33,6 +33,7 @@ pub enum Interval {
 pub enum StartTrialReason {
     Started,
     NotEligible,
+    Error,
 }
 
 #[derive(Debug, Serialize, ToSchema)]
@@ -45,9 +46,7 @@ pub struct StartTrialResponse {
 
 pub(crate) enum TrialOutcome {
     NotEligible,
-    StripeError(String),
-    CustomerError(String),
-    RpcError(String),
+    StripeError,
     Started(Interval),
 }
 
@@ -57,14 +56,8 @@ impl ToAnalyticsPayload for TrialOutcome {
             Self::NotEligible => AnalyticsPayload::builder("trial_skipped")
                 .with("reason", "not_eligible")
                 .build(),
-            Self::StripeError(_) => AnalyticsPayload::builder("trial_failed")
+            Self::StripeError => AnalyticsPayload::builder("trial_failed")
                 .with("reason", "stripe_error")
-                .build(),
-            Self::CustomerError(_) => AnalyticsPayload::builder("trial_failed")
-                .with("reason", "customer_error")
-                .build(),
-            Self::RpcError(_) => AnalyticsPayload::builder("trial_failed")
-                .with("reason", "rpc_error")
                 .build(),
             Self::Started(interval) => {
                 let plan = match interval {
@@ -102,19 +95,13 @@ impl IntoResponse for TrialOutcome {
                 reason: Some(StartTrialReason::NotEligible),
             })
             .into_response(),
-            Self::StripeError(msg) => error_response(
+            Self::StripeError => (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                "failed_to_create_subscription",
-                &msg,
-            ),
-            Self::CustomerError(msg) => error_response(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "failed_to_create_customer",
-                &msg,
-            ),
-            Self::RpcError(msg) => {
-                error_response(StatusCode::INTERNAL_SERVER_ERROR, "rpc_error", &msg)
-            }
+                Json(ErrorResponse {
+                    error: "failed_to_create_subscription".to_string(),
+                }),
+            )
+                .into_response(),
             Self::Started(_) => Json(StartTrialResponse {
                 started: true,
                 reason: Some(StartTrialReason::Started),
