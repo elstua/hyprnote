@@ -111,7 +111,7 @@ function ItemBase({
         "cursor-pointer w-full text-left px-3 py-2 rounded-lg",
         multiSelected && "bg-neutral-200",
         !multiSelected && selected && "bg-neutral-200",
-        !multiSelected && !selected && "hover:bg-neutral-100",
+        !multiSelected && !selected && "hover:bg-neutral-200/50",
         ignored && "opacity-40",
       ])}
     >

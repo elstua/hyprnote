@@ -148,7 +148,7 @@ export function LeftSidebar() {
             className={cn([
               "text-sm placeholder:text-sm placeholder:text-neutral-400",
               "w-full pl-8 pr-8 py-1.5",
-              "rounded-lg bg-neutral-100 border border-neutral-200",
+              "rounded-lg bg-neutral-200/50 border border-neutral-200",
               "focus:outline-hidden focus:bg-neutral-200",
               "transition-colors",
             ])}
