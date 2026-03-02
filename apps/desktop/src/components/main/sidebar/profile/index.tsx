@@ -268,7 +268,7 @@ export function ProfileSection({ onExpandChange }: ProfileSectionProps = {}) {
         )}
       </AnimatePresence>
 
-      <div className="bg-neutral-50 rounded-xl overflow-hidden">
+      <div className="overflow-hidden">
         <ProfileButton
           isExpanded={isExpanded}
           onClick={() => setIsExpanded(!isExpanded)}

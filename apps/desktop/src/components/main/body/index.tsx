@@ -50,6 +50,7 @@ import {
 } from "./extensions";
 import { loadExtensionPanels } from "./extensions/registry";
 import { TabContentFolder, TabItemFolder } from "./folders";
+import { HeaderListenButton } from "./header-listen-button";
 import { TabContentHuman, TabItemHuman } from "./humans";
 import { TabContentOnboarding, TabItemOnboarding } from "./onboarding";
 import { TabContentNote, TabItemNote } from "./sessions";
@@ -134,23 +135,30 @@ function Header({ tabs }: { tabs: Tab[] }) {
         : null,
     [isListening, liveSessionId, tabs],
   );
-  const regularTabs = useMemo(
-    () =>
-      listeningTab
-        ? tabs.filter((t) => !(t.type === "sessions" && t.id === liveSessionId))
-        : tabs,
-    [listeningTab, tabs, liveSessionId],
-  );
 
   const tabsScrollContainerRef = useRef<HTMLDivElement>(null);
   const handleNewEmptyTab = useNewEmptyTab();
-  const handleNewNoteAndListen = useNewNoteAndListen();
-  const scrollState = useScrollState(
-    tabsScrollContainerRef,
-    regularTabs.length,
-  );
+  const scrollState = useScrollState(tabsScrollContainerRef, tabs.length);
 
-  const setTabRef = useScrollActiveTabIntoView(regularTabs);
+  const LISTEN_BUTTON_EXPAND_SLACK_PX = 200;
+  const [hasOverflow, setHasOverflow] = useState(false);
+  useEffect(() => {
+    setHasOverflow((prev) => {
+      if (!prev && scrollState.contentOverflowPx > 0) return true;
+      // Only exit compact when there's clearly enough room for the full button.
+      // contentOverflowPx can be negative (free space) because we measure the
+      // inner content element directly, not the scroll container.
+      if (
+        prev &&
+        scrollState.contentOverflowPx < -LISTEN_BUTTON_EXPAND_SLACK_PX
+      ) {
+        return false;
+      }
+      return prev;
+    });
+  }, [scrollState.contentOverflowPx]);
+
+  const setTabRef = useScrollActiveTabIntoView(tabs);
   useTabsShortcuts();
 
   return (
@@ -205,24 +213,7 @@ function Header({ tabs }: { tabs: Tab[] }) {
         </div>
       )}
 
-      {listeningTab && (
-        <div className="flex items-center h-full shrink-0 mr-1">
-          <TabItem
-            tab={listeningTab}
-            handleClose={close}
-            handleSelect={select}
-            handleCloseOthersCallback={closeOthers}
-            handleCloseAll={closeAll}
-            handlePin={pin}
-            handleUnpin={unpin}
-            tabIndex={1}
-            pendingCloseConfirmationTab={pendingCloseConfirmationTab}
-            setPendingCloseConfirmationTab={setPendingCloseConfirmationTab}
-          />
-        </div>
-      )}
-
-      <div className="relative h-full min-w-0">
+      <div className="relative flex-1 h-full min-w-0">
         <div
           ref={tabsScrollContainerRef}
           data-tauri-drag-region
@@ -231,96 +222,82 @@ function Header({ tabs }: { tabs: Tab[] }) {
             "w-full overflow-x-auto overflow-y-hidden h-full",
           ])}
         >
-          <Reorder.Group
-            key={leftsidebar.expanded ? "expanded" : "collapsed"}
-            as="div"
-            axis="x"
-            values={regularTabs}
-            onReorder={reorder}
-            className="flex w-max gap-1 h-full"
-          >
-            {regularTabs.map((tab, index) => {
-              const isLastTab = index === regularTabs.length - 1;
-              const shortcutIndex = listeningTab
-                ? index < 7
-                  ? index + 2
-                  : isLastTab
-                    ? 9
-                    : undefined
-                : index < 8
-                  ? index + 1
-                  : isLastTab
-                    ? 9
-                    : undefined;
+          <div className="flex items-center w-max h-full">
+            <Reorder.Group
+              key={leftsidebar.expanded ? "expanded" : "collapsed"}
+              as="div"
+              axis="x"
+              values={tabs}
+              onReorder={reorder}
+              className="flex w-max gap-1 h-full"
+            >
+              {tabs.map((tab, index) => {
+                const isLastTab = index === tabs.length - 1;
+                const shortcutIndex =
+                  index < 8 ? index + 1 : isLastTab ? 9 : undefined;
 
-              return (
-                <Reorder.Item
-                  key={uniqueIdfromTab(tab)}
-                  value={tab}
-                  as="div"
-                  ref={(el) => setTabRef(tab, el)}
-                  style={{ position: "relative" }}
-                  className="h-full z-10"
-                  transition={{ layout: { duration: 0.15 } }}
-                >
-                  <TabItem
-                    tab={tab}
-                    handleClose={close}
-                    handleSelect={select}
-                    handleCloseOthersCallback={closeOthers}
-                    handleCloseAll={closeAll}
-                    handlePin={pin}
-                    handleUnpin={unpin}
-                    tabIndex={shortcutIndex}
-                    pendingCloseConfirmationTab={pendingCloseConfirmationTab}
-                    setPendingCloseConfirmationTab={
-                      setPendingCloseConfirmationTab
-                    }
-                  />
-                </Reorder.Item>
-              );
-            })}
-          </Reorder.Group>
+                return (
+                  <Reorder.Item
+                    key={uniqueIdfromTab(tab)}
+                    value={tab}
+                    as="div"
+                    ref={(el) => setTabRef(tab, el)}
+                    style={{ position: "relative" }}
+                    className="h-full z-10"
+                    transition={{ layout: { duration: 0.15 } }}
+                  >
+                    <TabItem
+                      tab={tab}
+                      handleClose={close}
+                      handleSelect={select}
+                      handleCloseOthersCallback={closeOthers}
+                      handleCloseAll={closeAll}
+                      handlePin={pin}
+                      handleUnpin={unpin}
+                      tabIndex={shortcutIndex}
+                      pendingCloseConfirmationTab={pendingCloseConfirmationTab}
+                      setPendingCloseConfirmationTab={
+                        setPendingCloseConfirmationTab
+                      }
+                    />
+                  </Reorder.Item>
+                );
+              })}
+            </Reorder.Group>
+            <Button
+              onClick={isOnboarding ? undefined : handleNewEmptyTab}
+              disabled={isOnboarding}
+              variant="ghost"
+              size="icon"
+              className={cn([
+                "text-neutral-600 shrink-0",
+                isOnboarding && "opacity-40 cursor-not-allowed",
+              ])}
+            >
+              <PlusIcon size={16} />
+            </Button>
+          </div>
         </div>
         {!scrollState.atStart && (
-          <div className="absolute left-0 top-0 h-full w-8 z-20 pointer-events-none bg-linear-to-r from-white to-transparent" />
+          <div className="absolute left-0 top-0 h-full w-8 z-20 pointer-events-none bg-linear-to-r from-stone-50 to-transparent" />
         )}
         {!scrollState.atEnd && (
-          <div className="absolute right-0 top-0 h-full w-8 z-20 pointer-events-none bg-linear-to-l from-white to-transparent" />
+          <div className="absolute right-0 top-0 h-full w-8 z-20 pointer-events-none bg-linear-to-l from-stone-50 to-transparent" />
         )}
       </div>
 
       <div
         data-tauri-drag-region
-        className="flex-1 flex h-full items-center justify-between"
+        className="flex items-center gap-1 h-full pl-1"
       >
-        <Button
-          onClick={isOnboarding ? undefined : handleNewEmptyTab}
-          disabled={isOnboarding}
-          variant="ghost"
-          size="icon"
-          className={cn([
-            "text-neutral-600",
-            isOnboarding && "opacity-40 cursor-not-allowed",
-          ])}
-        >
-          <PlusIcon size={16} />
-        </Button>
-
-        <div className="flex items-center gap-1 h-full ml-auto">
-          <Update />
-          {!isOnboarding && (
-            <Button
-              onClick={handleNewNoteAndListen}
-              variant="ghost"
-              size="sm"
-              className="gap-1 text-neutral-600 shrink-0"
-            >
-              <PlusIcon size={14} />
-              <span className="text-sm">New Note</span>
-            </Button>
-          )}
-        </div>
+        <Update />
+        {!isOnboarding && (
+          <HeaderListenButton
+            isListening={isListening}
+            listeningTab={listeningTab}
+            hasOverflow={hasOverflow}
+          />
+        )}
       </div>
     </div>
   );
@@ -696,7 +673,7 @@ export function StandardTabWrapper({
 }) {
   return (
     <div className="flex flex-col h-full">
-      <div className="flex flex-col rounded-xl border border-neutral-200 flex-1 overflow-hidden relative">
+      <div className="flex flex-col rounded-xl border border-neutral-200 flex-1 overflow-hidden relative bg-white">
         {children}
         {floatingButton}
         <StandardTabChatButton showTimeline={showTimeline} />
@@ -729,6 +706,7 @@ function useScrollState(
   const [scrollState, setScrollState] = useState({
     atStart: true,
     atEnd: true,
+    contentOverflowPx: 0,
   });
 
   const updateScrollState = useCallback(() => {
@@ -736,13 +714,25 @@ function useScrollState(
     if (!container) return;
 
     const { scrollLeft, scrollWidth, clientWidth } = container;
-    const hasOverflow = scrollWidth > clientWidth + 1;
+    const containerOverflowPx = scrollWidth - clientWidth;
+    const hasScrollOverflow = containerOverflowPx > 1;
+    // Measure the inner content element (Reorder.Group) directly so that
+    // contentOverflowPx can be negative — representing free space — which
+    // enables proper hysteresis for the compact/full listen button transition.
+    const contentWidth =
+      container.firstElementChild?.scrollWidth ?? scrollWidth;
+    const contentOverflowPx = contentWidth - clientWidth;
     const newState = {
-      atStart: !hasOverflow || scrollLeft <= 1,
-      atEnd: !hasOverflow || scrollLeft + clientWidth >= scrollWidth - 1,
+      atStart: !hasScrollOverflow || scrollLeft <= 1,
+      atEnd: !hasScrollOverflow || scrollLeft + clientWidth >= scrollWidth - 1,
+      contentOverflowPx,
     };
     setScrollState((prev) => {
-      if (prev.atStart === newState.atStart && prev.atEnd === newState.atEnd) {
+      if (
+        prev.atStart === newState.atStart &&
+        prev.atEnd === newState.atEnd &&
+        prev.contentOverflowPx === newState.contentOverflowPx
+      ) {
         return prev;
       }
       return newState;

@@ -21,7 +21,7 @@ export type BasicState = {
 
 export type BasicActions = {
   openCurrent: (tab: TabInput) => void;
-  openNew: (tab: TabInput) => void;
+  openNew: (tab: TabInput, options?: { insertFirst?: boolean }) => void;
   select: (tab: Tab) => void;
   selectNext: () => void;
   selectPrev: () => void;
@@ -71,9 +71,9 @@ export const createBasicSlice = <
       view: tab.type,
     });
   },
-  openNew: (tab) => {
+  openNew: (tab, options) => {
     const { tabs, history, addRecentlyOpened } = get();
-    set(openTab(tabs, tab, history, true));
+    set(openTab(tabs, tab, history, true, options?.insertFirst));
 
     if (tab.type === "sessions") {
       addRecentlyOpened(tab.id);
@@ -270,6 +270,7 @@ const openTab = <T extends BasicState & NavigationState>(
   newTab: TabInput,
   history: Map<string, TabHistory>,
   forceNewTab: boolean,
+  insertFirst?: boolean,
 ): Partial<T> => {
   const tabWithDefaults: Tab = {
     ...getDefaultState(newTab),
@@ -316,7 +317,17 @@ const openTab = <T extends BasicState & NavigationState>(
   } else {
     activeTab = { ...tabWithDefaults, active: true, slotId: id() };
     const deactivated = deactivateAll(tabs);
-    nextTabs = [...deactivated, activeTab];
+
+    if (insertFirst) {
+      const pinnedCount = deactivated.filter((t) => t.pinned).length;
+      nextTabs = [
+        ...deactivated.slice(0, pinnedCount),
+        activeTab,
+        ...deactivated.slice(pinnedCount),
+      ];
+    } else {
+      nextTabs = [...deactivated, activeTab];
+    }
 
     return updateWithHistory(nextTabs, activeTab, history);
   }

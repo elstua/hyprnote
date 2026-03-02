@@ -73,7 +73,6 @@ export function LeftSidebar() {
           "w-full h-9 py-1",
           isLinux ? "pl-3 justify-between" : "pl-20 justify-end",
           "shrink-0",
-          "rounded-xl bg-neutral-50",
         ])}
       >
         {isLinux && <TrafficLights />}
@@ -149,7 +148,7 @@ export function LeftSidebar() {
             className={cn([
               "text-sm placeholder:text-sm placeholder:text-neutral-400",
               "w-full pl-8 pr-8 py-1.5",
-              "rounded-lg bg-neutral-100",
+              "rounded-lg bg-neutral-100 border border-neutral-200",
               "focus:outline-hidden focus:bg-neutral-200",
               "transition-colors",
             ])}

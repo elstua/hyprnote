@@ -14,6 +14,7 @@ supabase/.seed/
 
 *storybook.log
 .cache/
+.dprint-cache/
 
 internal
 .turbo
