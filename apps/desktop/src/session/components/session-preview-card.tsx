@@ -1,6 +1,8 @@
 import { useMotionValue, useSpring, useTransform } from "motion/react";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { Streamdown } from "streamdown";
 
+import { isValidTiptapContent, json2md } from "@hypr/tiptap/shared";
 import {
   HoverCard,
   HoverCardContent,
@@ -59,13 +61,60 @@ function useSessionPreviewData(sessionId: string) {
     main.STORE_ID,
   );
 
-  const previewText = useMemo(() => {
-    const text = extractPlainText(rawMd);
-    if (!text) return "";
-    return text.length > MAX_PREVIEW_LENGTH
-      ? text.slice(0, MAX_PREVIEW_LENGTH) + "…"
-      : text;
-  }, [rawMd]);
+  const enhancedNoteIds = main.UI.useSliceRowIds(
+    main.INDEXES.enhancedNotesBySession,
+    sessionId,
+    main.STORE_ID,
+  );
+
+  const firstEnhancedNoteId = enhancedNoteIds?.[0];
+  const enhancedContent = main.UI.useCell(
+    "enhanced_notes",
+    firstEnhancedNoteId ?? "",
+    "content",
+    main.STORE_ID,
+  ) as string | undefined;
+  const enhancedTitle = main.UI.useCell(
+    "enhanced_notes",
+    firstEnhancedNoteId ?? "",
+    "title",
+    main.STORE_ID,
+  ) as string | undefined;
+
+  const hasEnhanced = !!firstEnhancedNoteId && !!enhancedContent;
+
+  const { previewMarkdown, previewPlainText } = useMemo(() => {
+    const source = hasEnhanced ? enhancedContent : rawMd;
+    if (typeof source !== "string" || !source.trim()) {
+      return { previewMarkdown: null, previewPlainText: "" };
+    }
+
+    const trimmed = source.trim();
+    if (trimmed.startsWith("{")) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (isValidTiptapContent(parsed)) {
+          const md = json2md(parsed).trim();
+          if (md) return { previewMarkdown: md, previewPlainText: "" };
+        }
+      } catch {}
+    }
+
+    const plain = extractPlainText(source);
+    const truncated =
+      plain.length > MAX_PREVIEW_LENGTH
+        ? plain.slice(0, MAX_PREVIEW_LENGTH) + "…"
+        : plain;
+    return { previewMarkdown: null, previewPlainText: truncated };
+  }, [hasEnhanced, enhancedContent, rawMd]);
+
+  const hasContent = !!previewMarkdown || !!previewPlainText;
+
+  const previewLabel = useMemo(() => {
+    if (hasEnhanced && hasContent) return enhancedTitle || "Summary";
+    if (hasContent) return "Notes";
+    return null;
+  }, [hasEnhanced, hasContent, enhancedTitle]);
 
   const dateDisplay = useMemo(() => {
     let timestamp = createdAt;
@@ -80,7 +129,14 @@ function useSessionPreviewData(sessionId: string) {
     return format(parsed, "MMM d, yyyy · h:mm a");
   }, [createdAt, eventJson]);
 
-  return { title, previewText, dateDisplay, participantMappingIds };
+  return {
+    title,
+    previewMarkdown,
+    previewPlainText,
+    previewLabel,
+    dateDisplay,
+    participantMappingIds,
+  };
 }
 
 function useCursorFollow(axis: "x" | "y") {
@@ -133,6 +189,59 @@ function useParticipantNames(mappingIds: string[]) {
   }, [mappingIds, allResults]);
 }
 
+const previewComponents = {
+  h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h1 className="text-xs font-semibold text-neutral-700">
+      {props.children as React.ReactNode}
+    </h1>
+  ),
+  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h2 className="text-xs font-semibold text-neutral-700">
+      {props.children as React.ReactNode}
+    </h2>
+  ),
+  h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h3 className="text-xs font-semibold text-neutral-700">
+      {props.children as React.ReactNode}
+    </h3>
+  ),
+  h4: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h4 className="text-xs font-medium text-neutral-600">
+      {props.children as React.ReactNode}
+    </h4>
+  ),
+  h5: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h5 className="text-xs font-medium text-neutral-600">
+      {props.children as React.ReactNode}
+    </h5>
+  ),
+  h6: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h6 className="text-xs font-medium text-neutral-600">
+      {props.children as React.ReactNode}
+    </h6>
+  ),
+  ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
+    <ul className="list-disc pl-3 text-xs">
+      {props.children as React.ReactNode}
+    </ul>
+  ),
+  ol: (props: React.HTMLAttributes<HTMLOListElement>) => (
+    <ol className="list-decimal pl-3 text-xs">
+      {props.children as React.ReactNode}
+    </ol>
+  ),
+  li: (props: React.HTMLAttributes<HTMLLIElement>) => (
+    <li className="text-xs leading-relaxed">
+      {props.children as React.ReactNode}
+    </li>
+  ),
+  p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
+    <p className="text-xs leading-relaxed">
+      {props.children as React.ReactNode}
+    </p>
+  ),
+} as const;
+
 const MAX_VISIBLE_PARTICIPANTS = 3;
 
 function ParticipantsList({ mappingIds }: { mappingIds: string[] }) {
@@ -164,8 +273,14 @@ export function SessionPreviewCard({
   children: React.ReactNode;
   enabled?: boolean;
 }) {
-  const { title, previewText, dateDisplay, participantMappingIds } =
-    useSessionPreviewData(sessionId);
+  const {
+    title,
+    previewMarkdown,
+    previewPlainText,
+    previewLabel,
+    dateDisplay,
+    participantMappingIds,
+  } = useSessionPreviewData(sessionId);
 
   const followAxis = side === "right" ? "y" : "x";
   const { triggerRef, handleMouseMove, handleMouseLeave, style } =
@@ -224,9 +339,23 @@ export function SessionPreviewCard({
           <div className="text-sm font-medium">{title || "Untitled"}</div>
           <ParticipantsList mappingIds={participantMappingIds} />
 
-          {previewText && (
-            <div className="text-gradient-to-b line-clamp-4 from-neutral-700 to-transparent text-xs leading-relaxed">
-              {previewText}
+          {(previewMarkdown || previewPlainText) && (
+            <div className="mt-1 flex flex-col gap-1">
+              <div className="max-h-24 overflow-hidden [mask-image:linear-gradient(to_bottom,black_60%,transparent)] text-neutral-600">
+                {previewMarkdown ? (
+                  <Streamdown
+                    components={previewComponents}
+                    className="flex flex-col"
+                    isAnimating={false}
+                  >
+                    {previewMarkdown}
+                  </Streamdown>
+                ) : (
+                  <div className="text-xs leading-relaxed">
+                    {previewPlainText}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
