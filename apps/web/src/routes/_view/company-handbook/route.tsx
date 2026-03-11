@@ -15,12 +15,9 @@ export const Route = createFileRoute("/_view/company-handbook")({
 
 function Component() {
   return (
-    <div
-      className="min-h-[calc(100vh-4rem)] bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
+    <div className="min-h-[calc(100vh-4rem)]">
       <LeftSidebar />
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+      <div className="mx-auto">
         <Outlet />
       </div>
     </div>

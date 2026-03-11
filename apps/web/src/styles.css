@@ -56,15 +56,54 @@
 @source "../../../packages/transcript/src";
 
 @theme {
+  /* ── Typography ──────────────────────────────── */
   --font-sans: "Geist", system-ui, -apple-system, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, monospace;
   --font-serif: "Fraunces", Georgia, serif;
   --font-serif2: "Instrument Serif", serif;
+
+  /* ── Layout ──────────────────────────────────── */
   --breakpoint-laptop: 72rem;
+
+  /* ── Animations ──────────────────────────────── */
   --animate-ios-opacity-spin: ios-opacity-spin 1s linear infinite;
+  --animate-hypr-dancing-stick: hypr-dancing-stick 1s ease-in-out infinite;
+
+  /* ── Colors: backgrounds ─────────────────────── */
+  --color-page: #f2f1ef;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #e5e5e3;
+
+  /* ── Colors: foreground / text ───────────────── */
+  --color-fg: #1c1917;
+  --color-fg-muted: #57534e;
+  --color-fg-subtle: #a8a29e;
+
+  /* ── Colors: borders ─────────────────────────── */
+  --color-border: #cbc8bd;
+  --color-border-subtle: #f5f5f5;
+
+  /* ── Colors: brand ───────────────────────────── */
+  --color-brand: #78716c;
+  --color-brand-dark: #57534e;
+
+  /* ── Shadows ─────────────────────────────────── */
+  --shadow-ring: 0 0 0 1px #cbc8bd;
+  --shadow-ring-left: -1px 0 0 1px #cbc8bd;
 }
 
 @theme inline {
+  @keyframes hypr-dancing-stick {
+    0%,
+    100% {
+      transform: scaleY(0.2);
+    }
+
+    50% {
+      transform: scaleY(1);
+    }
+  }
+
   @keyframes ios-opacity-spin {
     0%,
     100% {
@@ -123,6 +162,7 @@
     overflow-x: clip;
     max-width: 100vw;
     font-family: var(--font-sans);
+    background-color: var(--color-page);
   }
 
   h1,
@@ -139,6 +179,11 @@
   span,
   li {
     font-family: var(--font-sans);
+  }
+
+  p {
+    line-height: 1.5;
+    font-size: 1.3rem;
   }
 
   button,
@@ -193,7 +238,7 @@
     width: 1rem;
     height: 1rem;
     min-width: 1rem;
-    border: 1.5px solid #a8a29e;
+    border: 1.5px solid var(--color-fg-subtle);
     border-radius: 0.25rem;
     background-color: transparent;
     cursor: pointer;
@@ -203,8 +248,8 @@
   }
 
   .prose li > input[type="checkbox"]:checked {
-    background-color: #57534e;
-    border-color: #57534e;
+    background-color: var(--color-brand-dark);
+    border-color: var(--color-brand-dark);
   }
 
   .prose li > input[type="checkbox"]:checked::after {
@@ -298,4 +343,23 @@
   :where(code):not(:where([class~="not-prose"], [class~="not-prose"]
     *))::after {
   content: none;
+}
+
+.border-shadow {
+  box-shadow: var(--shadow-ring);
+}
+.border-brand {
+  border-color: var(--color-border);
+}
+
+.divide-brand {
+  border-color: var(--color-border);
+}
+
+.surface {
+  background-color: var(--color-surface);
+}
+
+.surface-subtle {
+  background-color: var(--color-surface-subtle);
 }

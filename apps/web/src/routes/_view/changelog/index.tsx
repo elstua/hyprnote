@@ -38,11 +38,8 @@ function Component() {
   const { changelogs } = Route.useLoaderData();
 
   return (
-    <main
-      className="min-h-screen flex-1 bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+    <main className="min-h-screen flex-1">
+      <div className="mx-auto">
         <div className="px-6 py-16 lg:py-24">
           <HeroSection />
         </div>
@@ -66,8 +63,8 @@ function Component() {
 
 function HeroSection() {
   return (
-    <div className="text-center">
-      <h1 className="mb-6 font-serif text-4xl tracking-tight text-stone-700 sm:text-5xl">
+    <div className="text-left">
+      <h1 className="mb-6 font-mono text-4xl tracking-tight text-stone-700 sm:text-5xl">
         Changelog
       </h1>
       <p className="text-lg text-neutral-600 sm:text-xl">
@@ -131,7 +128,7 @@ function ChangelogSection({ changelog }: { changelog: ChangelogWithMeta }) {
       </div>
 
       <div>
-        <article className="prose prose-stone prose-sm prose-headings:font-serif prose-headings:font-semibold prose-h2:text-lg prose-h2:mt-4 prose-h2:mb-2 prose-h3:text-base prose-h3:mt-3 prose-h3:mb-1 prose-ul:my-2 prose-li:my-0.5 prose-a:text-stone-600 prose-a:underline prose-a:decoration-dotted hover:prose-a:text-stone-800 prose-headings:no-underline prose-headings:decoration-transparent prose-code:bg-stone-50 prose-code:border prose-code:border-neutral-200 prose-code:rounded prose-code:px-1 prose-code:py-0.5 prose-code:text-xs prose-code:font-mono prose-code:text-stone-700 prose-img:rounded prose-img:border prose-img:border-neutral-200 prose-img:my-3 max-w-none">
+        <article className="prose prose-stone prose-sm prose-headings:font-mono prose-headings:font-semibold prose-h2:text-lg prose-h2:mt-4 prose-h2:mb-2 prose-h3:text-base prose-h3:mt-3 prose-h3:mb-1 prose-ul:my-2 prose-li:my-0.5 prose-a:text-stone-600 prose-a:underline prose-a:decoration-dotted hover:prose-a:text-stone-800 prose-headings:no-underline prose-headings:decoration-transparent prose-code:bg-stone-50 prose-code:border prose-code:border-neutral-200 prose-code:rounded prose-code:px-1 prose-code:py-0.5 prose-code:text-xs prose-code:font-mono prose-code:text-stone-700 prose-img:rounded prose-img:border prose-img:border-neutral-200 prose-img:my-3 max-w-none">
           <MDXContent code={changelog.mdx} components={defaultMDXComponents} />
         </article>
 

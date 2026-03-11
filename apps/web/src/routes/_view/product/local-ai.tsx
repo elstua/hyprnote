@@ -37,11 +37,8 @@ function Component() {
   const heroInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <main
-      className="min-h-screen flex-1 bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+    <main className="min-h-screen flex-1">
+      <div className="mx-auto">
         <HeroSection />
         <SlashSeparator />
         <WhyLocalAISection />
@@ -63,9 +60,9 @@ function Component() {
 function HeroSection() {
   return (
     <section className="bg-linear-to-b from-stone-50/30 to-stone-100/30">
-      <div className="flex flex-col items-center gap-6 px-4 py-24 text-center">
+      <div className="flex flex-col items-center gap-6 px-4 py-24 text-left">
         <div className="flex max-w-4xl flex-col gap-6">
-          <h1 className="font-serif text-4xl tracking-tight text-stone-700 sm:text-5xl">
+          <h1 className="font-mono text-4xl tracking-tight text-stone-700 sm:text-5xl">
             AI that runs
             <br />
             on your device
@@ -107,8 +104,8 @@ function HeroSection() {
 function WhyLocalAISection() {
   return (
     <section>
-      <div className="border-b border-neutral-100 text-center">
-        <p className="py-6 font-serif font-medium tracking-wide text-neutral-600 uppercase">
+      <div className="border-b border-neutral-100 text-left">
+        <p className="py-6 font-mono font-medium tracking-wide text-neutral-600 uppercase">
           Why local AI
         </p>
       </div>
@@ -118,7 +115,7 @@ function WhyLocalAISection() {
             icon="mdi:shield-lock"
             className="mb-4 text-3xl text-stone-700"
           />
-          <h3 className="mb-2 font-serif text-xl text-stone-700">
+          <h3 className="mb-2 font-mono text-xl text-stone-700">
             Complete privacy
           </h3>
           <p className="text-neutral-600">
@@ -132,7 +129,7 @@ function WhyLocalAISection() {
             icon="mdi:lightning-bolt"
             className="mb-4 text-3xl text-stone-700"
           />
-          <h3 className="mb-2 font-serif text-xl text-stone-700">
+          <h3 className="mb-2 font-mono text-xl text-stone-700">
             Lightning fast
           </h3>
           <p className="text-neutral-600">
@@ -142,7 +139,7 @@ function WhyLocalAISection() {
         </div>
         <div className="border-r border-neutral-100 p-8">
           <Icon icon="mdi:wifi-off" className="mb-4 text-3xl text-stone-700" />
-          <h3 className="mb-2 font-serif text-xl text-stone-700">
+          <h3 className="mb-2 font-mono text-xl text-stone-700">
             Works offline
           </h3>
           <p className="text-neutral-600">
@@ -155,7 +152,7 @@ function WhyLocalAISection() {
             icon="mdi:credit-card-off"
             className="mb-4 text-3xl text-stone-700"
           />
-          <h3 className="mb-2 font-serif text-xl text-stone-700">
+          <h3 className="mb-2 font-mono text-xl text-stone-700">
             No usage limits
           </h3>
           <p className="text-neutral-600">
@@ -171,8 +168,8 @@ function WhyLocalAISection() {
 function ComparisonSection() {
   return (
     <section>
-      <div className="border-b border-neutral-100 text-center">
-        <p className="py-6 font-serif font-medium tracking-wide text-neutral-600 uppercase">
+      <div className="border-b border-neutral-100 text-left">
+        <p className="py-6 font-mono font-medium tracking-wide text-neutral-600 uppercase">
           Local AI vs. Cloud AI
         </p>
       </div>
@@ -183,7 +180,7 @@ function ComparisonSection() {
               icon="mdi:cloud-upload"
               className="text-2xl text-neutral-400"
             />
-            <h3 className="font-serif text-lg text-neutral-700">
+            <h3 className="font-mono text-lg text-neutral-700">
               Cloud AI Services
             </h3>
           </div>
@@ -235,7 +232,7 @@ function ComparisonSection() {
         <div className="bg-green-50/50 p-8">
           <div className="mb-6 flex items-center gap-2">
             <Icon icon="mdi:laptop" className="text-2xl text-green-600" />
-            <h3 className="font-serif text-lg text-green-900">Char Local AI</h3>
+            <h3 className="font-mono text-lg text-green-900">Char Local AI</h3>
           </div>
           <ul className="flex flex-col gap-4 text-green-900">
             <li className="flex items-start gap-3">
@@ -290,8 +287,8 @@ function ComparisonSection() {
 function CapabilitiesSection() {
   return (
     <section>
-      <div className="border-b border-neutral-100 text-center">
-        <p className="py-6 font-serif font-medium tracking-wide text-neutral-600 uppercase">
+      <div className="border-b border-neutral-100 text-left">
+        <p className="py-6 font-mono font-medium tracking-wide text-neutral-600 uppercase">
           Local AI capabilities
         </p>
       </div>
@@ -361,8 +358,8 @@ function CapabilitiesSection() {
 function ModelsSection() {
   return (
     <section>
-      <div className="border-b border-neutral-100 text-center">
-        <p className="py-6 font-serif font-medium tracking-wide text-neutral-600 uppercase">
+      <div className="border-b border-neutral-100 text-left">
+        <p className="py-6 font-mono font-medium tracking-wide text-neutral-600 uppercase">
           AI models we use
         </p>
       </div>
@@ -373,7 +370,7 @@ function ModelsSection() {
             className="shrink-0 text-3xl text-stone-700"
           />
           <div>
-            <h3 className="mb-2 font-serif text-xl text-stone-700">
+            <h3 className="mb-2 font-mono text-xl text-stone-700">
               Whisper for transcription
             </h3>
             <p className="text-neutral-600">
@@ -387,7 +384,7 @@ function ModelsSection() {
         <div className="flex items-start gap-4 p-8">
           <Icon icon="mdi:brain" className="shrink-0 text-3xl text-stone-700" />
           <div>
-            <h3 className="mb-2 font-serif text-xl text-stone-700">
+            <h3 className="mb-2 font-mono text-xl text-stone-700">
               Local LLMs for understanding
             </h3>
             <p className="text-neutral-600">
@@ -405,8 +402,8 @@ function ModelsSection() {
 function ComplianceSection() {
   return (
     <section>
-      <div className="border-b border-neutral-100 text-center">
-        <p className="py-6 font-serif font-medium tracking-wide text-neutral-600 uppercase">
+      <div className="border-b border-neutral-100 text-left">
+        <p className="py-6 font-mono font-medium tracking-wide text-neutral-600 uppercase">
           Built for compliance
         </p>
       </div>
@@ -417,7 +414,7 @@ function ComplianceSection() {
             className="shrink-0 text-3xl text-green-600"
           />
           <div>
-            <h3 className="mb-2 font-serif text-lg text-stone-700">
+            <h3 className="mb-2 font-mono text-lg text-stone-700">
               GDPR & HIPAA ready
             </h3>
             <p className="text-neutral-600">
@@ -432,7 +429,7 @@ function ComplianceSection() {
             className="shrink-0 text-3xl text-blue-600"
           />
           <div>
-            <h3 className="mb-2 font-serif text-lg text-stone-700">
+            <h3 className="mb-2 font-mono text-lg text-stone-700">
               Zero data leaks
             </h3>
             <p className="text-neutral-600">
@@ -447,7 +444,7 @@ function ComplianceSection() {
             className="shrink-0 text-3xl text-purple-600"
           />
           <div>
-            <h3 className="mb-2 font-serif text-lg text-stone-700">
+            <h3 className="mb-2 font-mono text-lg text-stone-700">
               Full data ownership
             </h3>
             <p className="text-neutral-600">
@@ -462,7 +459,7 @@ function ComplianceSection() {
             className="shrink-0 text-3xl text-orange-600"
           />
           <div>
-            <h3 className="mb-2 font-serif text-lg text-stone-700">
+            <h3 className="mb-2 font-mono text-lg text-stone-700">
               No vendor lock-in
             </h3>
             <p className="text-neutral-600">

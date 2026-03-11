@@ -75,14 +75,11 @@ function Component() {
   const status = statusConfig[item.status];
 
   return (
-    <div
-      className="bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white px-4 py-8 sm:px-6 lg:px-8">
+    <div>
+      <div className="mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <Link
           to="/roadmap/"
-          className="mb-8 inline-flex items-center gap-2 font-serif text-sm text-neutral-600 transition-colors hover:text-stone-600"
+          className="mb-8 inline-flex items-center gap-2 font-mono text-sm text-neutral-600 transition-colors hover:text-stone-600"
         >
           <Icon icon="mdi:arrow-left" className="text-base" />
           <span>Back to roadmap</span>
@@ -90,7 +87,7 @@ function Component() {
 
         <article>
           <header className="mb-8">
-            <h1 className="mb-4 font-serif text-3xl text-stone-700 sm:text-4xl lg:text-5xl">
+            <h1 className="mb-4 font-mono text-3xl text-stone-700 sm:text-4xl lg:text-5xl">
               {item.title}
             </h1>
 
@@ -128,7 +125,7 @@ function Component() {
             </div>
           </header>
 
-          <div className="prose prose-stone prose-lg prose-headings:font-serif prose-headings:font-semibold prose-h1:text-3xl prose-h1:mt-12 prose-h1:mb-6 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-5 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4 prose-h4:text-lg prose-h4:mt-6 prose-h4:mb-3 prose-a:text-stone-600 prose-a:underline prose-a:decoration-dotted hover:prose-a:text-stone-800 prose-headings:no-underline prose-headings:decoration-transparent prose-code:bg-stone-50 prose-code:border prose-code:border-neutral-200 prose-code:rounded prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm prose-code:font-mono prose-code:text-stone-700 prose-pre:bg-stone-50 prose-pre:border prose-pre:border-neutral-200 prose-pre:rounded-xs prose-pre:prose-code:bg-transparent prose-pre:prose-code:border-0 prose-pre:prose-code:p-0 prose-img:rounded-xs prose-img:border prose-img:border-neutral-200 prose-img:my-8 max-w-none">
+          <div className="prose prose-stone prose-lg prose-headings:font-mono prose-headings:font-semibold prose-h1:text-3xl prose-h1:mt-12 prose-h1:mb-6 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-5 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4 prose-h4:text-lg prose-h4:mt-6 prose-h4:mb-3 prose-a:text-stone-600 prose-a:underline prose-a:decoration-dotted hover:prose-a:text-stone-800 prose-headings:no-underline prose-headings:decoration-transparent prose-code:bg-stone-50 prose-code:border prose-code:border-neutral-200 prose-code:rounded prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm prose-code:font-mono prose-code:text-stone-700 prose-pre:bg-stone-50 prose-pre:border prose-pre:border-neutral-200 prose-pre:rounded-xs prose-pre:prose-code:bg-transparent prose-pre:prose-code:border-0 prose-pre:prose-code:p-0 prose-img:rounded-xs prose-img:border prose-img:border-neutral-200 prose-img:my-8 max-w-none">
             <MDXContent
               code={item.mdx}
               components={{
@@ -143,7 +140,7 @@ function Component() {
           </div>
 
           <div className="mt-12 border-t border-neutral-100 pt-8">
-            <h3 className="mb-6 font-serif text-xl text-stone-700">
+            <h3 className="mb-6 font-mono text-xl text-stone-700">
               Related GitHub Issues
             </h3>
             {item.githubIssues && item.githubIssues.length > 0 ? (

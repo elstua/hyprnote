@@ -60,6 +60,65 @@ const resourcesList: {
   },
 ];
 
+const homeSections = [
+  { id: "hero", label: "Intro" },
+  { id: "how-it-works", label: "How it works" },
+  { id: "ai", label: "AI features" },
+  { id: "grows-with-you", label: "Grows with you" },
+  { id: "solutions", label: "Solutions" },
+  { id: "faq", label: "FAQ" },
+  { id: "blog", label: "Blog" },
+];
+
+const homeSectionIds = homeSections.map((s) => s.id);
+
+function useActiveHomeSection(enabled: boolean) {
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!enabled) {
+      setActiveId(null);
+      return;
+    }
+
+    setActiveId(homeSectionIds[0]);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.find((e) => e.isIntersecting);
+        if (visible) {
+          setActiveId(visible.target.id);
+        }
+      },
+      { rootMargin: "-20% 0px -60% 0px", threshold: 0 },
+    );
+
+    homeSectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [enabled]);
+
+  return activeId;
+}
+
+function findActiveSubItem(pathname: string) {
+  const candidates = [
+    ...featuresList.map((i) => ({ ...i, parent: "Product" })),
+    ...solutionsList.map((i) => ({ ...i, parent: "Product" })),
+    ...resourcesList
+      .filter((i) => !i.external)
+      .map((i) => ({ ...i, parent: "Resources" })),
+  ];
+  return (
+    candidates.find((item) =>
+      pathname.startsWith(item.to.replace(/\/$/, "")),
+    ) ?? null
+  );
+}
+
 function CharLogo({ className }: { className?: string }) {
   return (
     <svg
@@ -113,6 +172,9 @@ export function Sidebar() {
   const platform = usePlatform();
   const platformCTA = getPlatformCTA(platform);
   const pathname = router.location.pathname;
+  const isHomePage = pathname === "/";
+  const activeSection = useActiveHomeSection(isHomePage);
+  const activeSubItem = isHomePage ? null : findActiveSubItem(pathname);
 
   useEffect(() => {
     setIsMobileOpen(false);
@@ -138,12 +200,12 @@ export function Sidebar() {
 
       {isMobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 md:hidden"
+          className="fixed inset-0 z-40 bg-white md:hidden"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
 
-      <aside className="hidden w-[200px] shrink-0 self-stretch md:block">
+      <aside className="z-10 hidden w-[200px] shrink-0 self-stretch md:block">
         <div className="sticky top-0 flex h-screen flex-col">
           <div className="px-12 pt-16 pb-10">
             <Link to="/">
@@ -159,16 +221,19 @@ export function Sidebar() {
                   label={link.label}
                   to={link.to}
                   isActive={pathname.startsWith(link.to.replace(/\/$/, ""))}
+                  activeSubItem={
+                    activeSubItem?.parent === link.label ? activeSubItem : null
+                  }
                 />
               ) : (
                 <Link
                   key={link.to}
                   to={link.to}
                   className={cn(
-                    ["py-2.5 text-base transition-colors"],
+                    ["py-1.5 text-base transition-colors"],
                     [
                       pathname.startsWith(link.to.replace(/\/$/, ""))
-                        ? "text-stone-200"
+                        ? "-mx-2 rounded bg-stone-100 px-2 text-stone-800"
                         : "text-stone-950 hover:underline",
                     ],
                   )}
@@ -176,6 +241,12 @@ export function Sidebar() {
                   {link.label}
                 </Link>
               ),
+            )}
+
+            {isHomePage && (
+              <div className="mt-3 border-t border-stone-200 pt-4">
+                <HomeSectionNav activeId={activeSection} />
+              </div>
             )}
           </nav>
 
@@ -234,6 +305,35 @@ export function Sidebar() {
   );
 }
 
+function HomeSectionNav({ activeId }: { activeId: string | null }) {
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  return (
+    <nav className="flex flex-col gap-3">
+      {homeSections.map((s) => (
+        <button
+          key={s.id}
+          onClick={() => scrollTo(s.id)}
+          className="flex h-4 cursor-pointer items-center text-left"
+        >
+          {activeId === s.id ? (
+            <span className="text-xs text-stone-600 transition-all">
+              {s.label}
+            </span>
+          ) : (
+            <div className="h-px w-5 bg-stone-300 transition-all" />
+          )}
+        </button>
+      ))}
+    </nav>
+  );
+}
+
 function MobileTopBar({
   isMobileOpen,
   setIsMobileOpen,
@@ -261,10 +361,12 @@ function SidebarFlyout({
   label,
   to,
   isActive,
+  activeSubItem,
 }: {
   label: string;
   to: string;
   isActive: boolean;
+  activeSubItem: { to: string; label: string } | null;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -290,9 +392,13 @@ function SidebarFlyout({
         to={to}
         className={cn(
           [
-            "flex items-center justify-between py-2.5 text-base transition-colors",
+            "flex items-center justify-between py-1.5 text-base transition-colors",
           ],
-          [isActive ? "text-stone-200" : "text-stone-950 hover:underline"],
+          [
+            isActive
+              ? "-mx-2 rounded bg-stone-100 px-2 text-stone-800"
+              : "text-stone-950 hover:underline",
+          ],
         )}
       >
         {label}
@@ -304,6 +410,15 @@ function SidebarFlyout({
           ])}
         />
       </Link>
+
+      {activeSubItem && (
+        <Link
+          to={activeSubItem.to}
+          className="block py-0.5 pl-2 text-xs text-stone-500 transition-colors hover:text-stone-800"
+        >
+          {activeSubItem.label}
+        </Link>
+      )}
 
       {isOpen && (
         <div

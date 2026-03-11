@@ -31,6 +31,7 @@ function Component() {
   const isHandbookPage =
     router.location.pathname.startsWith("/company-handbook");
   const isChoosePage = router.location.pathname.startsWith("/choose");
+  const isHomePage = router.location.pathname === "/";
   const [onTrigger, setOnTrigger] = useState<(() => void) | null>(null);
   const [isDocsDrawerOpen, setIsDocsDrawerOpen] = useState(false);
   const [isHandbookDrawerOpen, setIsHandbookDrawerOpen] = useState(false);
@@ -75,12 +76,23 @@ function Component() {
                 setIsOpen: setIsHandbookDrawerOpen,
               }}
             >
-              <div className="flex min-h-screen flex-col">
+              <div className="relative flex min-h-screen flex-col">
+                {isHomePage && (
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[180vh]"
+                    style={{
+                      background:
+                        "linear-gradient(to bottom,rgb(255, 246, 220), transparent)",
+                    }}
+                  />
+                )}
+
                 {/* Mobile top bar spacer */}
                 <div className="h-14 md:hidden" />
 
                 {/* Sidebar + content in a centered container */}
-                <div className="mx-auto flex w-full max-w-[1280px]">
+                <div className="relative z-10 mx-auto flex w-full max-w-[1600px]">
                   {!isChoosePage && <Sidebar />}
                   <main className="min-w-0 flex-1">
                     <Outlet />

@@ -101,13 +101,9 @@ function Component() {
   const { article, relatedArticles } = Route.useLoaderData();
 
   return (
-    <main
-      data-blog-article
-      className="min-h-screen flex-1 bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
+    <main data-blog-article className="min-h-screen flex-1">
       <TableOfContents toc={article.toc} />
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+      <div className="mx-auto">
         <HeroSection article={article} />
         <SlashSeparator />
         <div className="mx-auto max-w-200 px-4 py-8">
@@ -123,7 +119,7 @@ function Component() {
 
 function HeroSection({ article }: { article: any }) {
   return (
-    <header className="px-4 py-12 text-center lg:py-16">
+    <header className="px-4 py-12 text-left lg:py-16">
       <Link
         to="/blog/"
         className="mb-8 inline-flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-stone-600"
@@ -138,7 +134,7 @@ function HeroSection({ article }: { article: any }) {
         </p>
       )}
 
-      <h1 className="mb-6 font-serif text-3xl text-stone-600 sm:text-4xl lg:text-5xl">
+      <h1 className="mb-6 font-mono text-3xl text-stone-600 sm:text-4xl lg:text-5xl">
         {article.title}
       </h1>
 
@@ -178,7 +174,7 @@ function HeroSection({ article }: { article: any }) {
 
 function ArticleContent({ article }: { article: any }) {
   return (
-    <article className="prose prose-stone prose-headings:font-serif prose-headings:font-semibold prose-h1:text-3xl prose-h1:mt-12 prose-h1:mb-6 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-5 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4 prose-h4:text-lg prose-h4:mt-6 prose-h4:mb-3 prose-a:text-stone-600 prose-a:underline prose-a:decoration-dotted hover:prose-a:text-stone-800 prose-headings:no-underline prose-headings:decoration-transparent prose-code:bg-stone-50 prose-code:border prose-code:border-neutral-200 prose-code:rounded prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm prose-code:font-mono prose-code:text-stone-700 prose-pre:bg-stone-50 prose-pre:border prose-pre:border-neutral-200 prose-pre:rounded-xs prose-pre:prose-code:bg-transparent prose-pre:prose-code:border-0 prose-pre:prose-code:p-0 prose-img:rounded-xs prose-img:border prose-img:border-neutral-200 prose-img:my-8 max-w-none">
+    <article className="prose prose-stone prose-headings:font-mono prose-headings:font-semibold prose-h1:text-3xl prose-h1:mt-12 prose-h1:mb-6 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-5 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4 prose-h4:text-lg prose-h4:mt-6 prose-h4:mb-3 prose-a:text-stone-600 prose-a:underline prose-a:decoration-dotted hover:prose-a:text-stone-800 prose-headings:no-underline prose-headings:decoration-transparent prose-code:bg-stone-50 prose-code:border prose-code:border-neutral-200 prose-code:rounded prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm prose-code:font-mono prose-code:text-stone-700 prose-pre:bg-stone-50 prose-pre:border prose-pre:border-neutral-200 prose-pre:rounded-xs prose-pre:prose-code:bg-transparent prose-pre:prose-code:border-0 prose-pre:prose-code:p-0 prose-img:rounded-xs prose-img:border prose-img:border-neutral-200 prose-img:my-8 max-w-none">
       <MDXContent code={article.mdx} components={defaultMDXComponents} />
     </article>
   );
@@ -196,7 +192,7 @@ function RelatedArticlesSection({
   return (
     <div className="mt-16 border-t border-neutral-100 pt-8">
       <div className="mb-6 flex items-center justify-between">
-        <h3 className="font-serif text-xl text-stone-600">More articles</h3>
+        <h3 className="font-mono text-xl text-stone-600">More articles</h3>
         <Link
           to="/blog/"
           className="text-sm text-neutral-600 transition-colors hover:text-stone-600"
@@ -219,7 +215,7 @@ function CTASection() {
 
   return (
     <section className="bg-linear-to-t from-stone-50/30 to-stone-100/30 px-4 py-16">
-      <div className="flex flex-col items-center gap-6 text-center">
+      <div className="flex flex-col items-center gap-6 text-left">
         <div className="mb-4 flex size-40 items-center justify-center rounded-[48px] border border-neutral-100 bg-transparent shadow-2xl">
           <Image
             src="/api/images/hyprnote/icon.png"
@@ -229,7 +225,7 @@ function CTASection() {
             className="mx-auto size-36 rounded-[40px] border border-neutral-100"
           />
         </div>
-        <h2 className="font-serif text-2xl sm:text-3xl">
+        <h2 className="font-mono text-2xl sm:text-3xl">
           Try Char for yourself
         </h2>
         <p className="mx-auto max-w-2xl text-lg text-neutral-600">
@@ -469,7 +465,7 @@ function RelatedArticleCard({ article }: { article: any }) {
         />
       </div>
       <div className="p-4">
-        <h4 className="mb-2 line-clamp-2 font-serif text-sm text-stone-600 transition-colors group-hover:text-stone-800">
+        <h4 className="mb-2 line-clamp-2 font-mono text-sm text-stone-600 transition-colors group-hover:text-stone-800">
           {title}
         </h4>
         <p className="mb-2 line-clamp-2 text-xs text-neutral-500">

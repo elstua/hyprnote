@@ -4,21 +4,25 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { allArticles } from "content-collections";
+import { CheckIcon, Sparkles, AudioLines } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { DancingSticks } from "@hypr/ui/components/ui/dancing-sticks";
 import { cn } from "@hypr/utils";
 
+import {
+  JiraToolCall,
+  TranscriptToolCall,
+} from "@/components/ai-feature-panel";
 import { DownloadButton } from "@/components/download-button";
-import { GitHubOpenSource } from "@/components/github-open-source";
 import { GithubStars } from "@/components/github-stars";
 import { Image } from "@/components/image";
 import { LogoCloud } from "@/components/logo-cloud";
 import { FAQ, FAQItem } from "@/components/mdx-jobs";
-import { MockWindow } from "@/components/mock-window";
-import { SlashSeparator } from "@/components/slash-separator";
-import { SocialCard } from "@/components/social-card";
+import { MockChatInput } from "@/components/mock-chat-input";
+import { NotebookGrid } from "@/components/notebook-grid";
 import { VideoModal } from "@/components/video-modal";
-import { VideoThumbnail } from "@/components/video-thumbnail";
 import { addContact } from "@/functions/loops";
 import { useHeroContext } from "@/hooks/use-hero-context";
 import { getHeroCTA, getPlatformCTA, usePlatform } from "@/hooks/use-platform";
@@ -100,51 +104,26 @@ export const Route = createFileRoute("/_view/")({
 
 function Component() {
   const [expandedVideo, setExpandedVideo] = useState<string | null>(null);
-  const [selectedFeature, setSelectedFeature] = useState(0);
-  const featuresScrollRef = useRef<HTMLDivElement>(null);
   const heroInputRef = useRef<HTMLInputElement>(null);
 
-  const scrollToFeature = (index: number) => {
-    setSelectedFeature(index);
-    if (featuresScrollRef.current) {
-      const container = featuresScrollRef.current;
-      const scrollLeft = container.offsetWidth * index;
-      container.scrollTo({ left: scrollLeft, behavior: "smooth" });
-    }
-  };
-
   return (
-    <main className="min-h-screen flex-1 overflow-x-hidden bg-linear-to-b from-white via-stone-50/20 to-white">
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
-        <AnnouncementBanner />
+    <main className="min-h-screen flex-1 overflow-x-hidden">
+      <div className="mx-auto">
+        {/* <AnnouncementBanner /> */}
         <HeroSection
           onVideoExpand={setExpandedVideo}
           heroInputRef={heroInputRef}
         />
-        <SlashSeparator />
+        <LogoSection />
         <HowItWorksSection />
-        <SlashSeparator />
-        <CoolStuffSection />
-        <SlashSeparator />
-        <TestimonialsSection />
-        <SlashSeparator />
-        <MainFeaturesSection
-          featuresScrollRef={featuresScrollRef}
-          selectedFeature={selectedFeature}
-          setSelectedFeature={setSelectedFeature}
-          scrollToFeature={scrollToFeature}
-        />
-        <SlashSeparator />
-        <TemplatesSection />
-        <SlashSeparator />
-        <GitHubOpenSource />
-        <SlashSeparator />
+        <AISection />
+        <GrowsWithYouSection />
+        <SolutionsTabbar />
+
         <FAQSection />
-        <SlashSeparator />
-        <ManifestoSection />
-        <SlashSeparator />
+
         <BlogSection />
-        <SlashSeparator />
+
         <CTASection heroInputRef={heroInputRef} />
       </div>
       <VideoModal
@@ -153,28 +132,6 @@ function Component() {
         onClose={() => setExpandedVideo(null)}
       />
     </main>
-  );
-}
-
-function AnnouncementBanner() {
-  return (
-    <Link
-      to="/blog/$slug/"
-      params={{ slug: "hyprnote-is-now-char" }}
-      className="group"
-    >
-      <div
-        className={cn([
-          "flex items-center justify-center gap-2 text-center",
-          "border-b border-stone-100 bg-stone-50/70",
-          "px-4 py-3",
-          "font-serif text-sm text-stone-700",
-          "transition-all hover:bg-stone-50",
-        ])}
-      >
-        <span className="group-hover:font-medium">Hyprnote is now Char.</span>
-      </div>
-    </Link>
   );
 }
 
@@ -250,129 +207,159 @@ function HeroSection({
   }, [heroContext, handleTrigger]);
 
   return (
-    <div className="bg-linear-to-b from-stone-50/30 to-stone-100/30">
+    <div className="">
       <div className="items-left flex w-full min-w-0 flex-col text-left">
         <section
           id="hero"
-          className="laptop:px-4 items-left flex w-full min-w-0 flex-col gap-12 px-8 pt-16 pb-24 text-left"
+          className="laptop:px-4 isolate flex w-full min-w-0 overflow-visible pt-10 text-left"
         >
-          <div className="flex w-2/3 max-w-2/3 min-w-0 flex-col gap-6">
-            <h1 className="min-w-0 font-mono text-2xl font-medium tracking-normal break-words text-stone-700 sm:text-5xl">
-              {heroContent.title}
-            </h1>
-            <p className="min-w-0 text-base break-words text-neutral-600 sm:text-xl">
-              {heroContent.subtitle}
-            </p>
-          </div>
+          <div className="border-shadow relative z-10 flex w-full min-w-0 flex-row content-between rounded-lg md:min-h-[80vh]">
+            <div className="flex flex-col gap-12 pt-16 pr-8 pl-16">
+              <div className="flex flex-col gap-6">
+                <h1 className="font-mono text-2xl leading-[1.4] font-medium break-words text-stone-700 sm:text-5xl">
+                  {heroContent.title}
+                </h1>
+                <p className="font-regular text-3xl leading-relaxed break-words text-neutral-600 sm:text-xl">
+                  {heroContent.subtitle}
+                </p>
+              </div>
 
-          {heroCTA.showInput ? (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                form.handleSubmit();
-              }}
-              className="w-full max-w-md text-left"
-            >
-              <form.Field
-                name="email"
-                validators={{
-                  onChange: ({ value }) => {
-                    if (!value) {
-                      return "Email is required";
-                    }
-                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                      return "Please enter a valid email";
-                    }
-                    return undefined;
-                  },
-                }}
-              >
-                {(field) => (
-                  <>
-                    <div
-                      className={cn([
-                        "items-left relative flex overflow-hidden rounded-full border-2 transition-all duration-200",
-                        shake && "animate-shake border-stone-600",
-                        !shake && mutation.isError && "border-red-500",
-                        !shake && mutation.isSuccess && "border-green-500",
-                        !shake &&
-                          !mutation.isError &&
-                          !mutation.isSuccess &&
-                          "border-neutral-200 focus-within:border-stone-500",
-                      ])}
-                    >
-                      <input
-                        ref={heroInputRef}
-                        type="email"
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        onBlur={field.handleBlur}
-                        placeholder={heroCTA.inputPlaceholder}
-                        className="flex-1 bg-white px-6 py-4 text-base outline-hidden"
-                        disabled={mutation.isPending || mutation.isSuccess}
-                      />
-                      <button
-                        type="submit"
-                        disabled={mutation.isPending || mutation.isSuccess}
-                        className="absolute right-1 rounded-full bg-linear-to-t from-stone-600 to-stone-500 px-4 py-3 text-sm text-white shadow-md transition-all hover:scale-[102%] hover:shadow-lg active:scale-[98%] disabled:opacity-50 sm:px-6"
-                      >
-                        {mutation.isPending
-                          ? "Sending..."
-                          : mutation.isSuccess
-                            ? "Sent!"
-                            : heroCTA.buttonLabel}
-                      </button>
-                    </div>
-                    {mutation.isSuccess && (
-                      <p className="mt-4 text-sm text-green-600">
-                        Thanks! We'll be in touch soon.
-                      </p>
-                    )}
-                    {mutation.isError && (
-                      <p className="mt-4 text-sm text-red-600">
-                        {mutation.error instanceof Error
-                          ? mutation.error.message
-                          : "Something went wrong. Please try again."}
-                      </p>
-                    )}
-                    {!mutation.isSuccess &&
-                      !mutation.isError &&
-                      (heroCTA.subtextLink ? (
-                        <Link
-                          to={heroCTA.subtextLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-4 block text-sm text-neutral-500 decoration-dotted transition-colors hover:text-neutral-700 hover:underline"
-                        >
-                          {heroCTA.subtext}
-                        </Link>
-                      ) : (
-                        <p className="mt-4 text-sm text-neutral-500">
-                          {heroCTA.subtext}
-                        </p>
-                      ))}
-                  </>
-                )}
-              </form.Field>
-            </form>
-          ) : (
-            <div className="items-left justify-left flex max-w-sm flex-col gap-4">
-              <DownloadButton />
-              {heroCTA.subtextLink ? (
-                <Link
-                  to={heroCTA.subtextLink}
-                  className="text-sm text-neutral-500 transition-colors hover:text-neutral-700"
+              {heroCTA.showInput ? (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    form.handleSubmit();
+                  }}
+                  className="w-full max-w-md text-left"
                 >
-                  {heroCTA.subtext}
-                </Link>
+                  <form.Field
+                    name="email"
+                    validators={{
+                      onChange: ({ value }) => {
+                        if (!value) {
+                          return "Email is required";
+                        }
+                        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                          return "Please enter a valid email";
+                        }
+                        return undefined;
+                      },
+                    }}
+                  >
+                    {(field) => (
+                      <>
+                        <div
+                          className={cn([
+                            "items-left relative flex overflow-hidden rounded-full border-2 transition-all duration-200",
+                            shake && "animate-shake border-stone-600",
+                            !shake && mutation.isError && "border-red-500",
+                            !shake && mutation.isSuccess && "border-green-500",
+                            !shake &&
+                              !mutation.isError &&
+                              !mutation.isSuccess &&
+                              "border-neutral-200 focus-within:border-stone-500",
+                          ])}
+                        >
+                          <input
+                            ref={heroInputRef}
+                            type="email"
+                            value={field.state.value}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            onBlur={field.handleBlur}
+                            placeholder={heroCTA.inputPlaceholder}
+                            className="flex-1 bg-white px-6 py-4 text-base outline-hidden"
+                            disabled={mutation.isPending || mutation.isSuccess}
+                          />
+                          <button
+                            type="submit"
+                            disabled={mutation.isPending || mutation.isSuccess}
+                            className="absolute right-1 rounded-full bg-linear-to-t from-stone-600 to-stone-500 px-4 py-3 text-sm text-white shadow-md transition-all hover:scale-[102%] hover:shadow-lg active:scale-[98%] disabled:opacity-50 sm:px-6"
+                          >
+                            {mutation.isPending
+                              ? "Sending..."
+                              : mutation.isSuccess
+                                ? "Sent!"
+                                : heroCTA.buttonLabel}
+                          </button>
+                        </div>
+                        {mutation.isSuccess && (
+                          <p className="mt-4 text-sm text-green-600">
+                            Thanks! We'll be in touch soon.
+                          </p>
+                        )}
+                        {mutation.isError && (
+                          <p className="mt-4 text-sm text-red-600">
+                            {mutation.error instanceof Error
+                              ? mutation.error.message
+                              : "Something went wrong. Please try again."}
+                          </p>
+                        )}
+                        {!mutation.isSuccess &&
+                          !mutation.isError &&
+                          (heroCTA.subtextLink ? (
+                            <Link
+                              to={heroCTA.subtextLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="mt-4 block text-sm text-neutral-500 decoration-dotted transition-colors hover:text-neutral-700 hover:underline"
+                            >
+                              {heroCTA.subtext}
+                            </Link>
+                          ) : (
+                            <p className="mt-4 text-sm text-neutral-500">
+                              {heroCTA.subtext}
+                            </p>
+                          ))}
+                      </>
+                    )}
+                  </form.Field>
+                </form>
               ) : (
-                <p className="text-sm text-neutral-500">{heroCTA.subtext}</p>
+                <div className="items-left justify-left flex max-w-sm flex-col gap-4">
+                  <DownloadButton />
+                  {heroCTA.subtextLink ? (
+                    <Link
+                      to={heroCTA.subtextLink}
+                      className="text-sm text-neutral-500 transition-colors hover:text-neutral-700"
+                    >
+                      {heroCTA.subtext}
+                    </Link>
+                  ) : (
+                    <p className="text-sm text-neutral-500">
+                      {heroCTA.subtext}
+                    </p>
+                  )}
+                </div>
               )}
             </div>
-          )}
+            <div className="relative hidden w-1/2 shrink-0 self-stretch overflow-hidden p-8 md:block">
+              <NotebookGrid />
+              <div className="absolute bottom-0 flex justify-center p-12">
+                <button
+                  onClick={() => onVideoExpand(MUX_PLAYBACK_ID)}
+                  className="group relative w-4/5 overflow-hidden rounded-xl border border-neutral-200 shadow-xl"
+                  style={{ aspectRatio: "16/9" }}
+                >
+                  <img
+                    src={`https://image.mux.com/${MUX_PLAYBACK_ID}/thumbnail.jpg?width=1280&height=720&fit_mode=smartcrop`}
+                    alt="Product demo"
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center transition-colors group-hover:bg-black/30">
+                    <div className="flex size-10 items-center justify-center rounded-full bg-white/90 shadow-lg transition-transform group-hover:scale-110">
+                      <Icon
+                        icon="mdi:play"
+                        className="ml-0.5 text-lg text-stone-800"
+                      />
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
         </section>
 
-        <div className="relative aspect-video w-full max-w-4xl overflow-hidden border-t border-neutral-100 md:hidden">
+        {/* <div className="relative aspect-video w-full max-w-4xl overflow-hidden border-t border-neutral-100 md:hidden">
           <VideoThumbnail
             playbackId={MUX_PLAYBACK_ID}
             onPlay={() => onVideoExpand(MUX_PLAYBACK_ID)}
@@ -387,229 +374,28 @@ function HeroSection({
               onPlay={() => onVideoExpand(MUX_PLAYBACK_ID)}
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
 }
 
-function ValuePropsGrid({
-  valueProps,
-}: {
-  valueProps: ReadonlyArray<{
-    readonly title: string;
-    readonly description: string;
-  }>;
-}) {
+function LogoSection() {
   return (
-    <div className="grid grid-cols-1 border-t border-neutral-100 md:grid-cols-3">
-      {valueProps.map((prop, index) => (
-        <div
-          key={prop.title}
-          className={cn([
-            "border-b p-6 text-left md:border-b-0",
-            index < valueProps.length - 1 && "md:border-r",
-            "border-neutral-100",
-          ])}
-        >
-          <h3 className="mb-1 font-serif font-medium text-stone-700">
-            {prop.title}
-          </h3>
-          <p className="text-base leading-relaxed text-neutral-600">
-            {prop.description}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function TestimonialsSection() {
-  return (
-    <section>
-      <div className="text-center">
-        <p className="py-6 font-serif font-medium tracking-wide text-neutral-600 uppercase">
-          Loved by professionals at
-        </p>
-
-        <LogoCloud />
-
-        <div className="w-full">
-          <TestimonialsMobileGrid />
-          <TestimonialsDesktopGrid />
-        </div>
-      </div>
+    <section className="px-4 py-16">
+      <h3 className="mb-4 font-mono text-xs font-medium tracking-widest text-neutral-400 uppercase">
+        Loved by professionals in:
+      </h3>
+      <LogoCloud />
     </section>
-  );
-}
-
-function TestimonialsMobileGrid() {
-  return (
-    <div className="flex flex-col md:hidden">
-      <SocialCard
-        platform="reddit"
-        author="spilledcarryout"
-        subreddit="macapps"
-        body="Dear Hyprnote Team,
-
-I wanted to take a moment to commend you on the impressive work you've done with Hyprnote. Your commitment to privacy, on-device AI, and transparency is truly refreshing in today's software landscape. The fact that all transcription and summarization happens locally and live!—without compromising data security—makes Hyprnote a standout solution, especially for those of us in compliance-sensitive environments.
-
-The live transcription is key for me. It saves a landmark step to transcribe each note myself using macwhisper. Much more handy they way you all do this. The Calendar function is cool too.
-
-I am a telephysician and my notes are much more quickly done. Seeing 6-8 patients daily and tested it yesteday. So yes, my job is session heavy. Add to that being in psychiatry where document making sessions become voluminous, my flow is AI dependent to make reports stand out. Accuracy is key for patient care.
-
-Hyprnote is now part of that process.
-
-Thank you for your dedication and for building a tool that not only saves time, but also gives peace of mind. I look forward to seeing Hyprnote continue to evolve
-
-Cheers!"
-        url="https://www.reddit.com/r/macapps/comments/1lo24b9/comment/n15dr0t/"
-        className="border-x-0 border-t-0"
-      />
-
-      <SocialCard
-        platform="linkedin"
-        author="Flavius Catalin Miron"
-        role="Product Engineer"
-        company="Waveful"
-        body="Guys at Char are wild.
-
-Had a call with John Jeong about their product (privacy-first AI notepad).
-
-Next day? They already shipped a first version of the context feature we discussed 🤯
-
-24 𝐡𝐨𝐮𝐫𝐬. A conversation turned into production
-
-As Product Engineer at Waveful, where we also prioritize rapid execution, I deeply respect this level of speed.
-
-The ability to ship this fast while maintaining quality, is what separates great teams from the rest 🔥
-
-Btw give an eye to Hyprnote:
-100% local AI processing
-Zero cloud dependency
-Real privacy
-Almost daily releases
-
-Their repo: https://lnkd.in/dKCtxkA3 (mac only rn but they're releasing for windows very soon)
-
-Been using it for daily tasks, even simple note-taking is GREAT because I can review everything late, make action points etc.
-
-Mad respect to the team. This is how you build in 2025. 🚀"
-        url="https://www.linkedin.com/posts/flaviews_guys-at-hyprnote-yc-s25-are-wild-had-activity-7360606765530386434-Klj-"
-        className="border-x-0 border-t-0"
-      />
-
-      <SocialCard
-        platform="twitter"
-        author="yoran was here"
-        username="yoran_beisher"
-        body="Been using Hypernote for a while now, truly one of the best AI apps I've used all year. Like they said, the best thing since sliced bread"
-        url="https://x.com/yoran_beisher/status/1953147865486012611"
-        className="border-x-0 border-t-0"
-      />
-
-      <SocialCard
-        platform="twitter"
-        author="Tom Yang"
-        username="tomyang11_"
-        body="I love the flexibility that @tryhyprnote gives me to integrate personal notes with AI summaries. I can quickly jot down important points during the meeting without getting distracted, then trust that the AI will capture them in full detail for review afterwards."
-        url="https://twitter.com/tomyang11_/status/1956395933538902092"
-        className="border-x-0 border-t-0 border-b-0"
-      />
-    </div>
-  );
-}
-
-function TestimonialsDesktopGrid() {
-  return (
-    <div className="hidden md:grid md:grid-cols-3">
-      <div className="row-span-2">
-        <SocialCard
-          platform="reddit"
-          author="spilledcarryout"
-          subreddit="macapps"
-          body="Dear Hyprnote Team,
-
-I wanted to take a moment to commend you on the impressive work you've done with Hyprnote. Your commitment to privacy, on-device AI, and transparency is truly refreshing in today's software landscape. The fact that all transcription and summarization happens locally and live!—without compromising data security—makes Hyprnote a standout solution, especially for those of us in compliance-sensitive environments.
-
-The live transcription is key for me. It saves a landmark step to transcribe each note myself using macwhisper. Much more handy they way you all do this. The Calendar function is cool too.
-
-I am a telephysician and my notes are much more quickly done. Seeing 6-8 patients daily and tested it yesteday. So yes, my job is session heavy. Add to that being in psychiatry where document making sessions become voluminous, my flow is AI dependent to make reports stand out. Accuracy is key for patient care.
-
-Hyprnote is now part of that process.
-
-Thank you for your dedication and for building a tool that not only saves time, but also gives peace of mind. I look forward to seeing Hyprnote continue to evolve
-
-Cheers!"
-          url="https://www.reddit.com/r/macapps/comments/1lo24b9/comment/n15dr0t/"
-          className="h-full w-full border-r-0 border-b-0 border-l-0"
-        />
-      </div>
-
-      <div className="row-span-2">
-        <SocialCard
-          platform="linkedin"
-          author="Flavius Catalin Miron"
-          role="Product Engineer"
-          company="Waveful"
-          body="Guys at Char are wild.
-
-Had a call with John Jeong about their product (privacy-first AI notepad).
-
-Next day? They already shipped a first version of the context feature we discussed 🤯
-
-24 𝐡𝐨𝐮𝐫𝐬. A conversation turned into production
-
-As Product Engineer at Waveful, where we also prioritize rapid execution, I deeply respect this level of speed.
-
-The ability to ship this fast while maintaining quality, is what separates great teams from the rest 🔥
-
-Btw give an eye to Hyprnote:
-100% local AI processing
-Zero cloud dependency
-Real privacy
-Almost daily releases
-
-Their repo: https://lnkd.in/dKCtxkA3 (mac only rn but they're releasing for windows very soon)
-
-Been using it for daily tasks, even simple note-taking is GREAT because I can review everything late, make action points etc.
-
-Mad respect to the team. This is how you build in 2025. 🚀"
-          url="https://www.linkedin.com/posts/flaviews_guys-at-hyprnote-yc-s25-are-wild-had-activity-7360606765530386434-Klj-"
-          className="h-full w-full border-r-0 border-b-0"
-        />
-      </div>
-
-      <div className="h-65">
-        <SocialCard
-          platform="twitter"
-          author="yoran was here"
-          username="yoran_beisher"
-          body="Been using Hypernote for a while now, truly one of the best AI apps I've used all year. Like they said, the best thing since sliced bread"
-          url="https://x.com/yoran_beisher/status/1953147865486012611"
-          className="h-full w-full overflow-hidden border-r-0 border-b-0"
-        />
-      </div>
-
-      <div className="h-65">
-        <SocialCard
-          platform="twitter"
-          author="Tom Yang"
-          username="tomyang11_"
-          body="I love the flexibility that @tryhyprnote gives me to integrate personal notes with AI summaries. I can quickly jot down important points during the meeting without getting distracted, then trust that the AI will capture them in full detail for review afterwards."
-          url="https://twitter.com/tomyang11_/status/1956395933538902092"
-          className="h-full w-full overflow-hidden border-r-0 border-b-0"
-        />
-      </div>
-    </div>
   );
 }
 
 export function CoolStuffSection() {
   return (
     <section>
-      <div className="border-b border-neutral-100 text-center">
-        <p className="py-6 font-serif font-medium tracking-wide text-neutral-600 uppercase">
+      <div className="border-b border-neutral-100 text-left">
+        <p className="py-6 font-mono font-medium tracking-wide text-neutral-600 uppercase">
           Secure by Design
         </p>
       </div>
@@ -622,7 +408,7 @@ export function CoolStuffSection() {
                 icon="mdi:robot-off-outline"
                 className="text-3xl text-stone-600"
               />
-              <h3 className="font-serif text-2xl text-stone-700">No bots</h3>
+              <h3 className="font-mono text-2xl text-stone-700">No bots</h3>
             </div>
             <p className="text-base leading-relaxed text-neutral-600">
               Captures system audio—no bots join your calls.
@@ -640,7 +426,7 @@ export function CoolStuffSection() {
           <div className="flex flex-col gap-4 p-8">
             <div className="flex items-center gap-3">
               <Icon icon="mdi:wifi-off" className="text-3xl text-stone-600" />
-              <h3 className="font-serif text-2xl text-stone-700">
+              <h3 className="font-mono text-2xl text-stone-700">
                 Fully local option
               </h3>
             </div>
@@ -666,7 +452,7 @@ export function CoolStuffSection() {
                 icon="mdi:robot-off-outline"
                 className="text-2xl text-stone-600"
               />
-              <h3 className="font-serif text-xl text-stone-700">No bots</h3>
+              <h3 className="font-mono text-xl text-stone-700">No bots</h3>
             </div>
             <p className="mb-4 text-base leading-relaxed text-neutral-600">
               Captures system audio—no bots join your calls.
@@ -684,7 +470,7 @@ export function CoolStuffSection() {
           <div className="p-6">
             <div className="mb-3 flex items-center gap-3">
               <Icon icon="mdi:wifi-off" className="text-2xl text-stone-600" />
-              <h3 className="font-serif text-xl text-stone-700">
+              <h3 className="font-mono text-xl text-stone-700">
                 Fully local option
               </h3>
             </div>
@@ -706,119 +492,180 @@ export function CoolStuffSection() {
 }
 
 export function HowItWorksSection() {
-  const [typedText1, setTypedText1] = useState("");
-  const [typedText2, setTypedText2] = useState("");
   const [enhancedLines, setEnhancedLines] = useState(0);
-
-  const text1 = "metrisc w/ john";
-  const text2 = "stakehlder mtg";
 
   useEffect(() => {
     const runAnimation = () => {
-      setTypedText1("");
-      setTypedText2("");
       setEnhancedLines(0);
 
-      let currentIndex1 = 0;
       setTimeout(() => {
-        const interval1 = setInterval(() => {
-          if (currentIndex1 < text1.length) {
-            setTypedText1(text1.slice(0, currentIndex1 + 1));
-            currentIndex1++;
-          } else {
-            clearInterval(interval1);
-
-            let currentIndex2 = 0;
-            const interval2 = setInterval(() => {
-              if (currentIndex2 < text2.length) {
-                setTypedText2(text2.slice(0, currentIndex2 + 1));
-                currentIndex2++;
-              } else {
-                clearInterval(interval2);
-
+        setEnhancedLines(1);
+        setTimeout(() => {
+          setEnhancedLines(2);
+          setTimeout(() => {
+            setEnhancedLines(3);
+            setTimeout(() => {
+              setEnhancedLines(4);
+              setTimeout(() => {
+                setEnhancedLines(5);
                 setTimeout(() => {
-                  setEnhancedLines(1);
+                  setEnhancedLines(6);
                   setTimeout(() => {
-                    setEnhancedLines(2);
-                    setTimeout(() => {
-                      setEnhancedLines(3);
-                      setTimeout(() => {
-                        setEnhancedLines(4);
-                        setTimeout(() => {
-                          setEnhancedLines(5);
-                          setTimeout(() => {
-                            setEnhancedLines(6);
-                            setTimeout(() => {
-                              setEnhancedLines(7);
-                              setTimeout(() => runAnimation(), 1000);
-                            }, 800);
-                          }, 800);
-                        }, 800);
-                      }, 800);
-                    }, 800);
+                    setEnhancedLines(7);
+                    setTimeout(() => runAnimation(), 1000);
                   }, 800);
-                }, 500);
-              }
-            }, 50);
-          }
-        }, 50);
-      }, 500);
+                }, 800);
+              }, 800);
+            }, 800);
+          }, 800);
+        }, 800);
+      }, 800);
     };
 
     runAnimation();
   }, []);
 
   return (
-    <section>
-      <div className="border-b border-neutral-100 text-center">
-        <p className="py-6 font-serif font-medium tracking-wide text-neutral-600 uppercase">
-          How it works
-        </p>
-      </div>
-      <div className="hidden sm:grid sm:grid-cols-2">
-        <div className="flex flex-col overflow-clip border-r border-neutral-100">
-          <div className="flex flex-col gap-4 p-8">
-            <p className="font-serif text-lg leading-relaxed text-neutral-600">
-              <span className="font-semibold">While you take notes,</span> Char
-              listens and keeps track of everything that happens during the
+    <section id="how-it-works" className="px-4 pt-16 pb-24">
+      <div className="flex flex-col">
+        {/* Header */}
+        <div className="border-brand border-b py-10">
+          <h2 className="max-w-2xl font-mono text-2xl tracking-wide text-neutral-700 md:text-4xl">
+            Focus on conversation while Char makes notes for you
+          </h2>
+        </div>
+
+        {/* Block 1: Listen & Write */}
+        <div className="flex flex-col md:flex-row">
+          <div className="flex flex-col justify-center gap-4 px-8 py-8 md:w-1/2">
+            <div className="border-brand flex size-10 shrink-0 items-center justify-center rounded-full border">
+              <AudioLines className="size-4 text-stone-600" />
+            </div>
+            <p className="font-regular text-3xl leading-relaxed text-neutral-700">
+              Char listens and keeps track of everything that happens during the
               meeting.
             </p>
           </div>
-          <div className="flex flex-1 items-end justify-center bg-stone-50/30 px-8 pb-0">
-            <MockWindow showAudioIndicator={enhancedLines === 0}>
-              <div className="h-75 overflow-hidden p-6">
-                <div className="text-neutral-700">ui update - moble</div>
-                <div className="text-neutral-700">api</div>
-                <div className="mt-4 text-neutral-700">new dash - urgnet</div>
-                <div className="text-neutral-700">a/b tst next wk</div>
-                <div className="mt-4 text-neutral-700">
-                  {typedText1}
-                  {typedText1 && typedText1.length < text1.length && (
-                    <span className="animate-pulse">|</span>
-                  )}
+
+          <div className="flex flex-col gap-4 px-4 pt-16 pb-0 md:w-1/2">
+            <div className="flex h-20 w-full items-center justify-between rounded-full bg-stone-600 p-4 pl-8">
+              <p className="text-base text-white">Meeting in progress...</p>
+              <div className="flex h-full w-[72px] content-center items-center justify-center rounded-full bg-red-600">
+                <Icon icon="mdi:phone-hangup" className="text-4xl text-white" />
+              </div>
+            </div>
+            <div className="flex flex-row gap-4">
+              {/* Notes panel */}
+              <div className="border-border bg-surface h-[300px] w-1/2 overflow-hidden rounded-xl border">
+                <div className="border-border relative flex h-[38px] shrink-0 items-center gap-2 border-b bg-neutral-50 px-4">
+                  <div className="flex gap-2">
+                    <div className="size-3 rounded-full bg-red-400" />
+                    <div className="size-3 rounded-full bg-yellow-400" />
+                    <div className="size-3 rounded-full bg-green-400" />
+                  </div>
+                  <div className="absolute left-1/2 -translate-x-1/2">
+                    <span className="font-mono text-sm font-medium text-neutral-600">
+                      my notes.md
+                    </span>
+                  </div>
                 </div>
-                <div className="text-neutral-700">
-                  {typedText2}
-                  {typedText2 && typedText2.length < text2.length && (
-                    <span className="animate-pulse">|</span>
-                  )}
+
+                <div className="overflow-auto p-4">
+                  <div className="overflow-hidden text-base whitespace-pre-line text-neutral-700">
+                    {"ui update - moble\napi\nnew dash - urgnet"}
+                  </div>
                 </div>
               </div>
-            </MockWindow>
+              <div className="grid w-1/2 grid-cols-2 place-content-around gap-4">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className="relative h-32 w-full bg-stone-50"
+                    style={{
+                      clipPath:
+                        "polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%)",
+                      transform: `rotate(${[-3, 2, -5, 4][i]}deg)`,
+                    }}
+                  >
+                    <div className="absolute top-0 right-0 h-[24px] w-[24px] bg-stone-200"></div>
+                  </div>
+                ))}
+                <div className="grid grid-cols-2 place-items-center gap-2">
+                  <div className="flex size-13 items-center justify-center rounded-full border border-red-200 bg-red-100">
+                    {" "}
+                    <Icon
+                      icon="mdi:person"
+                      className="text-4xl text-red-300"
+                    />{" "}
+                  </div>
+                  <div className="flex size-13 items-center justify-center rounded-full border border-blue-200 bg-blue-100">
+                    {" "}
+                    <Icon
+                      icon="mdi:person"
+                      className="text-4xl text-blue-300"
+                    />{" "}
+                  </div>
+                  <div className="flex size-13 items-center justify-center rounded-full border border-yellow-200 bg-yellow-100">
+                    {" "}
+                    <Icon
+                      icon="mdi:person"
+                      className="text-4xl text-yellow-300"
+                    />{" "}
+                  </div>
+                  <div className="flex size-13 items-center justify-center rounded-full border border-green-200 bg-green-100">
+                    {" "}
+                    <Icon
+                      icon="mdi:person"
+                      className="text-4xl text-green-300"
+                    />{" "}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-col overflow-clip">
-          <div className="flex flex-col gap-4 p-8">
-            <p className="font-serif text-lg leading-relaxed text-neutral-600">
-              <span className="font-semibold">After the meeting is over,</span>{" "}
-              Char combines your notes with transcripts to create a perfect
-              summary.
+        <div className="flex flex-col md:flex-row">
+          <div className="flex flex-col justify-center gap-4 px-8 pb-16 md:w-1/2"></div>
+          <div className="flex flex-col justify-center gap-4 px-4 py-16 md:w-1/2">
+            <svg
+              className="text-stone-300"
+              width="auto"
+              height="100%"
+              viewBox="0 0 314 85"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M44.665 0.5C60.7718 0.500161 75.5325 8.93172 88.1582 19.5205C106.895 35.2347 130.869 44.7871 157 44.7871C183.131 44.7871 207.103 35.2338 225.84 19.5195C238.465 8.93064 253.226 0.500001 269.333 0.5H313.5V52.4854H261.956C244.715 52.4854 228.565 61.2064 218.681 75.8398L212.83 84.5H99.7422L93.8926 75.8398C84.008 61.2063 67.8572 52.4854 50.6162 52.4854H0.5V0.5H44.665Z"
+                stroke="currentColor"
+              />
+            </svg>
+          </div>
+        </div>
+
+        {/* Block 2: Summarize */}
+        <div className="flex flex-col md:flex-row">
+          <div className="flex flex-col justify-center gap-4 px-8 pb-16 md:w-1/2">
+            <div className="border-brand flex size-10 shrink-0 items-center justify-center rounded-full border">
+              <Sparkles className="size-4 text-stone-600" />
+            </div>
+            <p className="font-regular text-3xl leading-relaxed text-neutral-700">
+              After the meeting is over, Char combines your notes with
+              transcripts to create a perfect summary.
             </p>
           </div>
-          <div className="flex flex-1 items-end justify-center bg-stone-50/30 px-8 pb-0">
-            <MockWindow>
-              <div className="flex h-75 flex-col gap-4 overflow-hidden p-6">
+
+          <div className="flex flex-1 items-end justify-center px-4 pt-8 pb-24">
+            <div className="border-brand surface w-full overflow-hidden rounded-xl border">
+              <div className="border-brand relative flex h-[38px] items-center gap-2 border-b bg-neutral-50 px-4">
+                <div className="flex gap-2">
+                  <div className="size-3 rounded-full bg-red-400" />
+                  <div className="size-3 rounded-full bg-yellow-400" />
+                  <div className="size-3 rounded-full bg-green-400" />
+                </div>
+              </div>
+              <div className="flex w-full flex-col gap-4 overflow-hidden p-6">
                 <div className="flex flex-col gap-2">
                   <h4
                     className={cn([
@@ -830,10 +677,10 @@ export function HowItWorksSection() {
                   </h4>
                   <ul className="flex list-disc flex-col gap-2 pl-5 text-neutral-700">
                     <li
-                      className={cn(
+                      className={cn([
                         "transition-opacity duration-500",
                         enhancedLines >= 2 ? "opacity-100" : "opacity-0",
-                      )}
+                      ])}
                     >
                       Sarah presented the new mobile UI update, which includes a
                       streamlined navigation bar and improved button placements
@@ -892,149 +739,516 @@ export function HowItWorksSection() {
                   </ul>
                 </div>
               </div>
-            </MockWindow>
+            </div>
+          </div>
+        </div>
+
+        {/* features block */}
+        <div className="flex flex-col *:min-h-[320px] *:w-full *:py-8 md:flex-row md:divide-x md:*:w-1/4">
+          {/* local or cloud */}
+          <div className="border-brand flex flex-col justify-between gap-8">
+            <div className="flex h-16 items-center gap-4">
+              <Icon icon="mdi:wifi-off" className="text-2xl text-stone-600" />
+              <div className="flex rounded-md border border-red-300 bg-red-100 px-2 py-2">
+                <DancingSticks
+                  amplitude={1}
+                  height={24}
+                  width={100}
+                  color="#ef4444"
+                />
+              </div>
+            </div>
+            <div className="flex min-h-[240px] flex-col justify-end gap-2">
+              <h4 className="mb-4 font-mono text-2xl font-medium text-stone-700">
+                Local or cloud, your choice
+              </h4>
+              <p className="text-base text-neutral-700">
+                Use local models or bring your own API key. Works without
+                internet.
+              </p>
+            </div>
+          </div>
+
+          {/* upload existing recordings */}
+          <div className="group border-brand flex flex-col justify-between gap-8 px-8">
+            <div className="flex h-16 flex-wrap items-center gap-2">
+              {[
+                "1:1 Meeting",
+                "Sales Call",
+                "Sprint Planning",
+                "Interview",
+              ].map((wf) => (
+                <div
+                  key={wf}
+                  className="rounded-md border border-neutral-200 bg-stone-50 px-2 py-1 text-xs text-neutral-500"
+                >
+                  {wf}
+                </div>
+              ))}
+            </div>
+            <div className="flex min-h-[240px] flex-col justify-end gap-2">
+              <h4 className="mb-4 font-mono text-2xl font-medium text-stone-700">
+                Create <br /> any workflow
+              </h4>
+              <p className="text-base text-neutral-700">
+                Build templates for every meeting type. Char adapts to how you
+                work.
+              </p>
+            </div>
+          </div>
+
+          {/* no bot on calls */}
+          <div className="border-brand flex flex-col justify-between gap-8 px-8">
+            <div className="flex h-16 items-center">
+              <div className="flex w-full items-center justify-between gap-2 rounded-xl border border-neutral-200 bg-gradient-to-t from-white to-stone-100 px-4 py-3 text-nowrap shadow-lg">
+                <div className="flex items-center gap-2">
+                  <Icon
+                    icon="mdi:video"
+                    className="shrink-0 text-xl text-stone-500"
+                  />
+                  <div className="flex flex-col gap-0.5">
+                    <p className="text-xs text-neutral-400">1-1 with Joanna</p>
+                    <p className="text-sm font-medium text-neutral-500">
+                      AI Notetaker joined.
+                    </p>
+                  </div>
+                </div>
+                <button className="ml-2 shrink-0 text-neutral-300 transition-colors hover:text-neutral-500">
+                  <Icon icon="mdi:close" className="text-base" />
+                </button>
+              </div>
+            </div>
+            <div className="flex min-h-[240px] flex-col justify-end gap-2">
+              <h4 className="mb-4 font-mono text-2xl font-medium text-stone-700">
+                No bot on calls
+              </h4>
+              <p className="text-base text-neutral-700">
+                Char captures system audio directly. No faceless bots join your
+                meetings.
+              </p>
+            </div>
+          </div>
+
+          {/* feature 4 */}
+          <div className="border-brand flex flex-col justify-between gap-8 pl-8">
+            <div className="flex h-16 items-center">
+              <div className="relative flex h-16 w-full items-center justify-center rounded-md border-2 border-dashed border-green-300 px-2 py-2">
+                <div className="flex size-10 items-center justify-center rounded-full bg-gray-100">
+                  <Icon
+                    icon="mdi:file-upload"
+                    className="text-xl text-stone-600"
+                  />
+                </div>
+                <div className="absolute flex rotate-8 flex-row items-center gap-2 rounded-md border border-gray-300 bg-gray-100 py-2 pr-4 pl-2 text-nowrap shadow-lg transition-all duration-500 ease-out group-hover:translate-x-[10%] group-hover:-translate-y-[40%] group-hover:rotate-6 lg:right-1/4 lg:bottom-1/4 lg:translate-x-[5%] lg:-translate-y-[5%]">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 32 33"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="absolute top-1/2 left-1/2 h-8 w-8"
+                  >
+                    <path
+                      d="M8.58243 2.64649C9.68243 2.23399 11.8595 2.48608 12.4324 3.72358C13.0053 4.96108 13.3491 6.56524 13.372 6.17566C13.3282 4.99155 13.4282 3.8065 13.6699 2.64649C13.9246 1.90357 14.5083 1.31996 15.2512 1.06524C15.9325 0.849761 16.6559 0.802581 17.3595 0.927743C18.0709 1.07418 18.7009 1.4833 19.1241 2.07358C19.6602 3.40992 19.9625 4.82851 20.0178 6.26733C20.0748 5.03958 20.2827 3.8235 20.6366 2.64649C21.0195 2.10692 21.5788 1.71789 22.2178 1.54649C22.9755 1.40797 23.7519 1.40797 24.5095 1.54649C25.1314 1.75288 25.6753 2.14475 26.0678 2.66941C26.5546 3.88434 26.8484 5.16789 26.9387 6.47358C26.9387 6.79441 27.0991 5.57983 27.6033 4.77774C28.0083 3.57537 29.3113 2.92898 30.5137 3.33399C31.716 3.739 32.3624 5.04204 31.9574 6.24441C31.9574 7.73399 31.9574 7.66524 31.9574 8.67358C31.9574 9.68191 31.9574 10.5757 31.9574 11.4236C31.8749 12.7647 31.691 14.0977 31.4074 15.4111C31.0097 16.5737 30.4545 17.6763 29.7574 18.6882C28.645 19.9258 27.7256 21.3242 27.0303 22.8361C26.8607 23.5878 26.7838 24.3574 26.8012 25.1277C26.7989 25.8396 26.8914 26.5486 27.0762 27.2361C26.1393 27.3362 25.1943 27.3362 24.2574 27.2361C23.3637 27.0986 22.2637 25.3111 21.9658 24.7611C21.8184 24.4658 21.5167 24.2792 21.1866 24.2792C20.8565 24.2792 20.5548 24.4658 20.4074 24.7611C19.9033 25.6319 18.7803 27.2132 18.1158 27.3048C16.5803 27.4882 13.3949 27.3048 10.9199 27.3048C10.9199 27.3048 11.3553 25.0132 10.3928 24.1882C9.43034 23.3632 8.49076 22.4007 7.78034 21.759L5.87826 19.6507C4.53693 18.4055 3.55538 16.8224 3.03659 15.0673C2.55534 12.9132 2.60117 11.8819 3.03659 11.0111C3.48069 10.292 4.17416 9.76167 4.98451 9.52149C5.65773 9.39937 6.35076 9.44662 7.00117 9.65899C7.45095 9.84729 7.83967 10.1567 8.12409 10.5527C8.65118 11.2632 8.83451 11.6069 8.60534 10.8277C8.37617 10.0486 7.87201 9.47566 7.61993 8.53608C7.12917 7.42645 6.83453 6.24013 6.74909 5.02983C6.84301 3.94395 7.60118 3.03049 8.65118 2.73816"
+                      fill="white"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M8.58243 2.64649C9.68243 2.23399 11.8595 2.48608 12.4324 3.72358C13.0053 4.96108 13.3491 6.56524 13.372 6.17566C13.3282 4.99155 13.4282 3.8065 13.6699 2.64649C13.9246 1.90357 14.5083 1.31996 15.2512 1.06524C15.9325 0.849761 16.6559 0.802581 17.3595 0.927743C18.0709 1.07418 18.7009 1.4833 19.1241 2.07358C19.6602 3.40992 19.9625 4.82851 20.0178 6.26733C20.0748 5.03958 20.2827 3.8235 20.6366 2.64649C21.0195 2.10692 21.5788 1.71789 22.2178 1.54649C22.9755 1.40797 23.7519 1.40797 24.5095 1.54649C25.1314 1.75288 25.6753 2.14475 26.0678 2.66941C26.5546 3.88434 26.8484 5.16789 26.9387 6.47358C26.9387 6.79441 27.0991 5.57983 27.6033 4.77774C28.0083 3.57537 29.3113 2.92898 30.5137 3.33399C31.716 3.739 32.3624 5.04204 31.9574 6.24441C31.9574 7.73399 31.9574 7.66524 31.9574 8.67358C31.9574 9.68191 31.9574 10.5757 31.9574 11.4236C31.8749 12.7647 31.691 14.0977 31.4074 15.4111C31.0097 16.5737 30.4545 17.6763 29.7574 18.6882C28.645 19.9258 27.7256 21.3242 27.0303 22.8361C26.8607 23.5878 26.7838 24.3574 26.8012 25.1277C26.7989 25.8396 26.8914 26.5486 27.0762 27.2361C26.1393 27.3362 25.1943 27.3362 24.2574 27.2361C23.3637 27.0986 22.2637 25.3111 21.9658 24.7611C21.8184 24.4658 21.5167 24.2792 21.1866 24.2792C20.8565 24.2792 20.5548 24.4658 20.4074 24.7611C19.9033 25.6319 18.7803 27.2132 18.1158 27.3048C16.5803 27.4882 13.3949 27.3048 10.9199 27.3048C10.9199 27.3048 11.3553 25.0132 10.3928 24.1882C9.43034 23.3632 8.49076 22.4007 7.78034 21.759L5.87826 19.6507C4.53693 18.4055 3.55538 16.8224 3.03659 15.0673C2.55534 12.9132 2.60117 11.8819 3.03659 11.0111C3.48069 10.292 4.17416 9.76167 4.98451 9.52149C5.65773 9.39937 6.35076 9.44662 7.00117 9.65899C7.45095 9.84729 7.83967 10.1567 8.12409 10.5527C8.65117 11.2632 8.83451 11.6069 8.60534 10.8277C8.37618 10.0486 7.87201 9.47566 7.61992 8.53608C7.12917 7.42645 6.83453 6.24013 6.74909 5.02983C6.79595 3.92807 7.52955 2.97439 8.58243 2.64649Z"
+                      stroke="black"
+                      stroke-width="1.71875"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M26.3428 20.2369V12.3266C26.3428 11.8531 25.958 11.4692 25.4834 11.4692C25.0088 11.4692 24.624 11.8531 24.624 12.3266V20.2369C24.624 20.7104 25.0088 21.0942 25.4834 21.0942C25.958 21.0942 26.3428 20.7104 26.3428 20.2369Z"
+                      fill="black"
+                    />
+                    <path
+                      d="M21.8053 20.234L21.7595 12.3196C21.7568 11.8472 21.3698 11.4665 20.8952 11.4693C20.4206 11.472 20.0381 11.8571 20.0408 12.3295L20.0866 20.2439C20.0894 20.7162 20.4763 21.0969 20.9509 21.0942C21.4255 21.0915 21.8081 20.7064 21.8053 20.234Z"
+                      fill="black"
+                    />
+                    <path
+                      d="M15.4575 12.3399L15.5034 20.2337C15.5061 20.7118 15.8931 21.097 16.3678 21.0942C16.8424 21.0914 17.2249 20.7016 17.2221 20.2236L17.1763 12.3297C17.1735 11.8517 16.7865 11.4665 16.3119 11.4693C15.8373 11.472 15.4548 11.8618 15.4575 12.3399Z"
+                      fill="black"
+                    />
+                  </svg>
+
+                  <Icon
+                    icon="mdi:file-outline"
+                    className="text-xl text-stone-600"
+                  />
+                  <div className="flex flex-col">
+                    <p className="text-xs text-neutral-600">
+                      Meeting.12.03.26.wav
+                    </p>
+                    <p className="text-xs text-neutral-300">14:30:25</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex min-h-[240px] flex-col justify-end gap-2">
+              <h4 className="mb-4 font-mono text-2xl font-medium text-stone-700">
+                Upload existing recordings
+              </h4>
+              <p className="text-base text-neutral-700">
+                Drop in audio files or transcripts to turn them into searchable
+                notes.
+              </p>
+            </div>
           </div>
         </div>
       </div>
+    </section>
+  );
+}
 
-      <div className="sm:hidden">
-        <div className="border-b border-neutral-100">
-          <div className="p-6 pb-2">
-            <p className="mb-4 font-serif text-base leading-relaxed text-neutral-600">
-              <span className="font-semibold">While you take notes,</span> Char
-              listens and keeps track of everything that happens during the
-              meeting.
-            </p>
-          </div>
-          <div className="overflow-clip bg-stone-50/30 px-6 pb-0">
-            <MockWindow
-              variant="mobile"
-              showAudioIndicator={enhancedLines === 0}
+function ChatBubbleQuestion({ text }: { text: string }) {
+  return (
+    <div className="flex w-full justify-end">
+      <div className="w-2/3 rounded-t-2xl rounded-bl-2xl border border-neutral-200 bg-blue-50 px-4 py-3">
+        <p className="text-sm text-stone-700">{text}</p>
+      </div>
+    </div>
+  );
+}
+
+function ChatBubbleResponse({
+  text,
+  withCheck,
+}: {
+  text: string;
+  withCheck?: boolean;
+}) {
+  return (
+    <div className="w-2/3 rounded-xl border border-stone-200 bg-gradient-to-b from-white to-stone-100 px-4 py-3">
+      <p className="mb-1 text-sm text-stone-500">Char</p>
+      {withCheck ? (
+        <div className="flex items-center gap-2 text-sm">
+          <Icon icon="mdi:check-circle" className="text-sm text-green-500" />
+          <span className="text-stone-700">{text}</span>
+        </div>
+      ) : (
+        <p className="text-sm text-stone-700">{text}</p>
+      )}
+    </div>
+  );
+}
+
+function ChatInput() {
+  return (
+    <div className="p-3">
+      <div className="flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-3 py-2">
+        <span className="flex-1 text-sm text-neutral-400">
+          Ask Char anything...
+        </span>
+        <div className="flex size-6 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-300">
+          <Icon icon="mdi:arrow-up" className="text-xs" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WorkflowGraphic() {
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setStep(1), 200);
+    const t2 = setTimeout(() => setStep(2), 800);
+    const t3 = setTimeout(() => setStep(3), 3200);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
+  }, []);
+
+  return (
+    <div className="flex w-full max-w-[420px] flex-col">
+      <div className="flex h-[280px] flex-col justify-end gap-3 overflow-hidden px-1">
+        <AnimatePresence initial={false}>
+          {step >= 1 && (
+            <motion.div
+              key="q"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
             >
-              <div className="h-50 overflow-hidden p-6">
-                <div className="text-neutral-700">ui update - moble</div>
-                <div className="text-neutral-700">api</div>
-                <div className="mt-3 text-neutral-700">new dash - urgnet</div>
-                <div className="text-neutral-700">a/b tst next wk</div>
-                <div className="mt-3 text-neutral-700">
-                  {typedText1}
-                  {typedText1 && typedText1.length < text1.length && (
-                    <span className="animate-pulse">|</span>
-                  )}
-                </div>
-                <div className="text-neutral-700">
-                  {typedText2}
-                  {typedText2 && typedText2.length < text2.length && (
-                    <span className="animate-pulse">|</span>
-                  )}
-                </div>
-              </div>
-            </MockWindow>
+              <ChatBubbleQuestion text="Create a Jira ticket for the mobile bug and assign to Sarah" />
+            </motion.div>
+          )}
+          {step >= 2 && (
+            <motion.div
+              key="tool"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              <JiraToolCall loopKey={0} />
+            </motion.div>
+          )}
+          {step >= 3 && (
+            <motion.div
+              key="r"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              <ChatBubbleResponse
+                text="Jira ticket ENG-247 created and assigned to Sarah."
+                withCheck
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      <ChatInput />
+    </div>
+  );
+}
+
+function LiveGraphic() {
+  const [loopKey, setLoopKey] = useState(0);
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    setStep(0);
+    const t1 = setTimeout(() => setStep(1), 200);
+    const t2 = setTimeout(() => setStep(2), 800);
+    const t3 = setTimeout(() => setStep(3), 2800);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
+  }, [loopKey]);
+
+  useEffect(() => {
+    const id = setInterval(() => setLoopKey((k) => k + 1), 6500);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="flex w-full max-w-[420px] flex-col gap-3">
+      <div className="flex w-full items-center justify-between rounded-xl border border-neutral-200 bg-white px-4 py-2.5 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="size-2 animate-pulse rounded-full bg-red-500" />
+          <span className="text-sm font-medium text-neutral-700">
+            Weekly Team Sync
+          </span>
+          <span className="text-xs text-neutral-400">42:17</span>
+        </div>
+        <button className="flex items-center gap-1.5 rounded-full bg-red-500 px-3 py-1.5 text-xs font-medium text-white">
+          <Icon icon="mdi:phone-hangup" className="text-sm" />
+          End call
+        </button>
+      </div>
+
+      <div className="flex h-[280px] flex-col justify-end gap-3 overflow-hidden px-1">
+        <AnimatePresence initial={false}>
+          {step >= 1 && (
+            <motion.div
+              key={`${loopKey}-q`}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              <ChatBubbleQuestion text="What's the timeline for the mobile UI?" />
+            </motion.div>
+          )}
+          {step >= 2 && (
+            <motion.div
+              key={`${loopKey}-tool`}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              <TranscriptToolCall loopKey={loopKey} />
+            </motion.div>
+          )}
+          {step >= 3 && (
+            <motion.div
+              key={`${loopKey}-r`}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              <ChatBubbleResponse text="Ben committed to auth module this week. Sarah estimates 2 sprints for full API." />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <ChatInput />
+    </div>
+  );
+}
+
+export function AISection() {
+  return (
+    <section id="ai" className="px-4 py-16">
+      <div className="items-left flex flex-col gap-4 pb-12 text-left">
+        <h2 className="font-mono text-2xl tracking-wide text-neutral-700 md:text-4xl">
+          Get more from every note with AI
+        </h2>
+        <p className="text-neutral-500">
+          Ask questions, execute tasks, and grow your knowledge base—all from
+          your meeting notes.
+        </p>
+      </div>
+
+      <div className="border-brand surface grid grid-cols-1 gap-px rounded-xl border md:grid-cols-3">
+        {/* Block 1: Search */}
+        <div className="border-brand flex flex-col border-r">
+          <div className="flex min-h-[280px] flex-1 items-center justify-center p-8">
+            <MockChatInput
+              prompts={[
+                "What did Sarah say about the timeline?",
+                "Any action items from last week's sync?",
+                "What decisions were made in Q1 planning?",
+              ]}
+              className="w-full"
+            />
+          </div>
+          <div className="border-brand flex min-h-[240px] flex-col gap-2 border-t p-8">
+            <h3 className="font-mono text-2xl font-medium text-stone-700">
+              Ask anything about your meetings
+            </h3>
+            <p className="text-base leading-relaxed text-neutral-600">
+              Query your entire conversation history. Find decisions, action
+              items, or topics discussed in previous meetings in natural
+              language.
+            </p>
           </div>
         </div>
 
-        <div>
-          <div className="p-6 pb-2">
-            <p className="mb-4 font-serif text-base leading-relaxed text-neutral-600">
-              <span className="font-semibold">After the meeting is over,</span>{" "}
-              Char combines your notes with transcripts to create a perfect
-              summary.
+        {/* Block 2: Workflow */}
+        <div className="border-brand flex flex-col border-r">
+          <div className="flex min-h-[280px] flex-1 items-center justify-center p-8">
+            <WorkflowGraphic />
+          </div>
+          <div className="border-brand flex min-h-[240px] flex-col gap-2 border-t p-8">
+            <h3 className="font-mono text-2xl font-medium text-stone-700">
+              Execute workflows and tasks
+            </h3>
+            <p className="text-base leading-relaxed text-neutral-600">
+              Describe what you want to do and let Char handle the rest.
+              Automate follow-up tasks across your tools without manual data
+              entry.
+            </p>
+            <div className="flex items-center gap-3 pt-1">
+              <Icon
+                icon="simple-icons:slack"
+                className="text-base text-neutral-400"
+              />
+              <Icon
+                icon="simple-icons:linear"
+                className="text-base text-neutral-400"
+              />
+              <Icon icon="logos:jira" className="text-base text-neutral-400" />
+            </div>
+          </div>
+        </div>
+
+        {/* Block 3: Live */}
+        <div className="border-brand flex flex-col">
+          <div className="flex min-h-[280px] flex-1 items-center justify-center p-8">
+            <LiveGraphic />
+          </div>
+          <div className="border-brand flex min-h-[240px] flex-col gap-2 border-t p-8">
+            <h3 className="font-mono text-2xl font-medium text-stone-700">
+              Chat during live meetings
+            </h3>
+            <p className="text-base leading-relaxed text-neutral-600">
+              Get instant answers from the current transcript and past meeting
+              context without breaking your flow.
             </p>
           </div>
-          <div className="overflow-clip bg-stone-50/30 px-6 pb-0">
-            <MockWindow variant="mobile">
-              <div className="flex h-50 flex-col gap-4 overflow-hidden p-6">
-                <div className="flex flex-col gap-2">
-                  <h4 className="text-lg font-semibold text-stone-700">
-                    Mobile UI Update and API Adjustments
-                  </h4>
-                  <ul className="flex list-disc flex-col gap-2 pl-4 text-neutral-700">
-                    <li
-                      className={cn([
-                        "transition-opacity duration-500",
-                        enhancedLines >= 1 ? "opacity-100" : "opacity-0",
-                      ])}
-                    >
-                      Sarah presented the new mobile UI update, which includes a
-                      streamlined navigation bar and improved button placements
-                      for better accessibility.
-                    </li>
-                    <li
-                      className={cn([
-                        "transition-opacity duration-500",
-                        enhancedLines >= 2 ? "opacity-100" : "opacity-0",
-                      ])}
-                    >
-                      Ben confirmed that API adjustments are needed to support
-                      dynamic UI changes, particularly for fetching personalized
-                      user data more efficiently.
-                    </li>
-                    <li
-                      className={cn([
-                        "transition-opacity duration-500",
-                        enhancedLines >= 3 ? "opacity-100" : "opacity-0",
-                      ])}
-                    >
-                      The UI update will be implemented in phases, starting with
-                      core navigation improvements. Ben will ensure API
-                      modifications are completed before development begins.
-                    </li>
-                  </ul>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <h4 className="text-lg font-semibold text-stone-700">
-                    New Dashboard – Urgent Priority
-                  </h4>
-                  <ul className="flex list-disc flex-col gap-2 pl-4 text-neutral-700">
-                    <li
-                      className={cn([
-                        "transition-opacity duration-500",
-                        enhancedLines >= 4 ? "opacity-100" : "opacity-0",
-                      ])}
-                    >
-                      Alice emphasized that the new analytics dashboard must be
-                      prioritized due to increasing stakeholder demand.
-                    </li>
-                    <li
-                      className={cn([
-                        "transition-opacity duration-500",
-                        enhancedLines >= 5 ? "opacity-100" : "opacity-0",
-                      ])}
-                    >
-                      The new dashboard will feature real-time user engagement
-                      metrics and a customizable reporting system.
-                    </li>
-                    <li
-                      className={cn([
-                        "transition-opacity duration-500",
-                        enhancedLines >= 6 ? "opacity-100" : "opacity-0",
-                      ])}
-                    >
-                      Ben mentioned that backend infrastructure needs
-                      optimization to handle real-time data processing.
-                    </li>
-                    <li
-                      className={cn([
-                        "transition-opacity duration-500",
-                        enhancedLines >= 6 ? "opacity-100" : "opacity-0",
-                      ])}
-                    >
-                      Mark stressed that the dashboard launch should align with
-                      marketing efforts to maximize user adoption.
-                    </li>
-                    <li
-                      className={cn([
-                        "transition-opacity duration-500",
-                        enhancedLines >= 6 ? "opacity-100" : "opacity-0",
-                      ])}
-                    >
-                      Development will start immediately, and a basic prototype
-                      must be ready for stakeholder review next week.
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </MockWindow>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function GrowsWithYouSection() {
+  return (
+    <section id="grows-with-you" className="px-4 py-16">
+      <div className="mx-auto rounded-xl border border-neutral-200 bg-white">
+        <div className="items-left flex flex-col gap-2 px-8 pt-16 pb-8 text-left">
+          <h2 className="font-mono text-2xl tracking-wide text-neutral-700 md:text-4xl">
+            Char grows with you
+          </h2>
+          <p className="text-md max-w-2xl pb-4 text-neutral-500">
+            Add people from meetings in contacts, grow knowledge about your
+            chats and context of previous meetings
+          </p>
+          <Link
+            to="/product/mini-apps/"
+            className="text-md flex items-center gap-1 text-neutral-600 underline hover:text-neutral-800"
+          >
+            Explore all features
+            <Icon icon="mdi:arrow-top-right" className="text-sm" />
+          </Link>
+        </div>
+
+        <div className="grid min-h-[500px] border-t border-neutral-200 md:grid-cols-2">
+          <div className="flex flex-col border-b border-neutral-200 md:border-r md:border-b-0">
+            <div className="px-8 pt-16 pb-8">
+              <h3 className="mb-3 max-w-2/3 font-mono text-3xl leading-[1.3] text-stone-600">
+                Have your contacts in one place
+              </h3>
+              <p className="mb-4 max-w-2/3 leading-relaxed text-neutral-600">
+                Import contacts and watch them come alive with context once you
+                actually meet.
+              </p>
+              <ul className="flex flex-col gap-3">
+                <li className="flex items-start gap-3">
+                  <CheckIcon className="mt-0.5 size-5 shrink-0 text-green-600" />
+                  <span className="text-md text-neutral-600">
+                    All your chats linked
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckIcon className="mt-0.5 size-5 shrink-0 text-green-600" />
+                  <span className="text-md text-neutral-600">
+                    Generated summary from meetings
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="flex flex-col">
+            <div className="px-8 pt-16">
+              <h3 className="mb-3 font-mono text-3xl text-stone-600">
+                Work with your calendar
+              </h3>
+              <p className="text-md mb-4 leading-relaxed text-neutral-600">
+                Connect your calendar for intelligent meeting preparation and
+                automatic note organization.
+              </p>
+              <ul className="flex flex-col gap-3">
+                <li className="flex items-start gap-3">
+                  <CheckIcon className="mt-0.5 size-5 shrink-0 text-green-600" />
+                  <span className="text-md text-neutral-600">
+                    Automatic meeting linking
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckIcon className="mt-0.5 size-5 shrink-0 text-green-600" />
+                  <span className="text-md text-neutral-600">
+                    Pre-meeting context and preparation
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckIcon className="mt-0.5 size-5 shrink-0 text-green-600" />
+                  <span className="text-md text-neutral-600">
+                    Timeline view with notes
+                  </span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -1113,7 +1327,7 @@ export function MainFeaturesSection({
 
   return (
     <section>
-      <div className="px-4 py-16 text-center">
+      <div className="px-4 py-16 text-left">
         <div className="mx-auto mb-6 flex size-28 items-center justify-center rounded-4xl border border-neutral-100 bg-transparent shadow-xl">
           <Image
             src="/api/images/hyprnote/icon.png"
@@ -1123,7 +1337,7 @@ export function MainFeaturesSection({
             className="size-24 rounded-3xl border border-neutral-100"
           />
         </div>
-        <h2 className="mb-4 font-serif text-3xl text-stone-700">
+        <h2 className="mb-4 font-mono text-2xl tracking-wide text-neutral-700 md:text-4xl">
           Works like charm
         </h2>
         <p className="mx-auto max-w-lg text-neutral-600">
@@ -1219,7 +1433,7 @@ function FeaturesMobileCarousel({
                       icon={feature.icon}
                       className="text-2xl text-stone-600"
                     />
-                    <h3 className="font-serif text-lg text-stone-700">
+                    <h3 className="font-mono text-lg text-stone-700">
                       {feature.title}
                     </h3>
                   </div>
@@ -1426,7 +1640,7 @@ function FeaturesDesktopGrid() {
           <div className="flex-1 p-6">
             <div className="mb-2 flex items-center gap-3">
               <Icon icon={feature.icon} className="text-2xl text-stone-600" />
-              <h3 className="font-serif text-lg text-stone-700">
+              <h3 className="font-mono text-lg text-stone-700">
                 {feature.title}
               </h3>
             </div>
@@ -1470,8 +1684,8 @@ const templateCategories = [
 export function TemplatesSection() {
   return (
     <section>
-      <div className="laptop:px-0 px-4 py-12 text-center">
-        <h2 className="mb-4 font-serif text-3xl text-stone-700">
+      <div className="laptop:px-0 px-4 py-12 text-left">
+        <h2 className="mb-4 font-mono text-2xl tracking-wide text-neutral-700 md:text-4xl">
           A template for every meeting
         </h2>
         <p className="text-neutral-600">
@@ -1483,7 +1697,7 @@ export function TemplatesSection() {
       <TemplatesMobileView />
       <TemplatesDesktopView />
 
-      <div className="border-t border-neutral-100 py-8 text-center">
+      <div className="border-t border-neutral-100 py-8 text-left">
         <Link
           to="/gallery/"
           search={{ type: "template" }}
@@ -1515,7 +1729,7 @@ function TemplatesMobileView() {
         >
           <div className="mb-3 flex items-center gap-3">
             <Icon icon={category.icon} className="text-2xl text-stone-600" />
-            <h3 className="font-serif text-lg text-stone-700">
+            <h3 className="font-mono text-lg text-stone-700">
               {category.category}
             </h3>
           </div>
@@ -1553,7 +1767,7 @@ function TemplatesDesktopView() {
         >
           <div className="mb-3 flex items-center gap-3">
             <Icon icon={category.icon} className="text-2xl text-stone-600" />
-            <h3 className="font-serif text-lg text-stone-700">
+            <h3 className="font-mono text-lg text-stone-700">
               {category.category}
             </h3>
           </div>
@@ -1577,12 +1791,235 @@ function TemplatesDesktopView() {
   );
 }
 
+const solutionColors: Record<
+  string,
+  { accent: string; bg: string; border: string }
+> = {
+  sales: { accent: "#b45309", bg: "#fefce8", border: "#fde68a" },
+  research: { accent: "#1d4ed8", bg: "#eff6ff", border: "#bfdbfe" },
+  legal: { accent: "#374151", bg: "#f9fafb", border: "#d1d5db" },
+  engineering: { accent: "#6d28d9", bg: "#f5f3ff", border: "#ddd6fe" },
+  healthcare: { accent: "#047857", bg: "#ecfdf5", border: "#a7f3d0" },
+  recruiting: { accent: "#be185d", bg: "#fff1f2", border: "#fecdd3" },
+  "project-management": { accent: "#c2410c", bg: "#fff7ed", border: "#fed7aa" },
+  journalism: { accent: "#0f766e", bg: "#f0fdfa", border: "#99f6e4" },
+};
+
+const solutionScenarios = [
+  {
+    id: "sales",
+    label: "Sales",
+    icon: "mdi:briefcase-outline",
+    headline: "Close more deals, capture every detail",
+    description:
+      "Stop context-switching between notes and conversations. Char records every sales call, extracts deal insights, and prepares follow-ups automatically.",
+    bullets: [
+      "Capture buying signals, objections, and commitments",
+      "Auto-generate action items after every call",
+      "Keep sensitive deal data on your device",
+    ],
+    link: "/solution/sales/",
+  },
+  {
+    id: "research",
+    label: "Research",
+    icon: "mdi:flask-outline",
+    headline: "Turn every interview into structured insight",
+    description:
+      "Record user interviews and field sessions without missing a word. AI identifies themes, extracts quotes, and surfaces patterns across your entire research corpus.",
+    bullets: [
+      "Accurate transcripts for qualitative analysis",
+      "Theme and pattern identification across sessions",
+      "Participant data stays private on your machine",
+    ],
+    link: "/solution/research",
+  },
+  {
+    id: "legal",
+    label: "Legal",
+    icon: "mdi:scale-balance",
+    headline: "Privilege-protected notes, nothing leaves your device",
+    description:
+      "Attorney-client confidentiality demands local AI. Char captures client consultations, depositions, and strategy sessions with complete data sovereignty.",
+    bullets: [
+      "Local AI — no cloud processing of privileged content",
+      "Searchable archive of all case-related meetings",
+      "Accurate billing documentation from meeting records",
+    ],
+    link: "/solution/legal",
+  },
+  {
+    id: "engineering",
+    label: "Engineering",
+    icon: "mdi:code-braces",
+    headline: "The meeting tool you can actually fork",
+    description:
+      "Bring your own keys, build React extensions, run local models. Char is open source, self-hostable, and designed to fit into your existing dev workflow.",
+    bullets: [
+      "Shell hooks and API for custom automation",
+      "Self-host on your own infrastructure",
+      "Full open-source codebase you can inspect and modify",
+    ],
+    link: "/solution/engineering",
+  },
+  {
+    id: "healthcare",
+    label: "Healthcare",
+    icon: "mdi:hospital-building",
+    headline: "Clinical notes without the administrative burden",
+    description:
+      "Focus on your patient, not your keyboard. Char captures consultations with local processing that keeps health data off third-party servers.",
+    bullets: [
+      "Local AI keeps patient data on your device",
+      "Structured notes from every consultation",
+      "Searchable records across all patient interactions",
+    ],
+    link: "/solution/healthcare",
+  },
+  {
+    id: "recruiting",
+    label: "Recruiting",
+    icon: "mdi:account-search-outline",
+    headline: "Remember every candidate, make better hires",
+    description:
+      "Capture every interview with full transcripts and AI summaries. Compare candidates with objective meeting records instead of fading memory.",
+    bullets: [
+      "Full transcripts for every interview",
+      "AI-generated candidate summaries",
+      "Share structured notes across the hiring team",
+    ],
+    link: "/solution/recruiting",
+  },
+  {
+    id: "project-management",
+    label: "Project Mgmt",
+    icon: "mdi:clipboard-check-outline",
+    headline: "Turn standup chaos into clear action",
+    description:
+      "Every decision, blocker, and commitment captured automatically. Char turns planning sessions into structured notes with owners and deadlines.",
+    bullets: [
+      "Auto-extracted action items and owners",
+      "Decision log for every project meeting",
+      "Searchable context for async teammates",
+    ],
+    link: "/solution/project-management",
+  },
+  {
+    id: "journalism",
+    label: "Journalism",
+    icon: "mdi:newspaper-variant-outline",
+    headline: "Every source, every quote, perfectly on record",
+    description:
+      "Record interviews and press briefings with accurate transcripts. Never misquote a source or lose context when writing under deadline.",
+    bullets: [
+      "Verbatim transcripts ready for fact-checking",
+      "Search quotes across all interviews instantly",
+      "Local storage keeps source conversations confidential",
+    ],
+    link: "/solution/journalism",
+  },
+];
+
+function SolutionsTabbar() {
+  const [activeId, setActiveId] = useState(solutionScenarios[0].id);
+  const active =
+    solutionScenarios.find((s) => s.id === activeId) ?? solutionScenarios[0];
+  const activeColor = solutionColors[active.id];
+
+  return (
+    <section id="solutions" className="px-4 py-16">
+      <div className="mb-12 flex flex-col gap-2 pt-16">
+        <h2 className="font-mono text-2xl tracking-wide text-neutral-700 md:text-4xl">
+          Build for every conversation
+        </h2>
+      </div>
+
+      {/* Folder tabs */}
+      <div className="flex items-end overflow-x-auto [scrollbar-width:none]">
+        {solutionScenarios.map((scenario) => {
+          const isActive = scenario.id === activeId;
+          const c = solutionColors[scenario.id];
+          return (
+            <button
+              key={scenario.id}
+              onClick={() => setActiveId(scenario.id)}
+              style={{
+                backgroundColor: isActive ? c.bg : "#f5f5f4",
+                color: isActive ? c.accent : "#a8a29e",
+                clipPath:
+                  "polygon(0 0, 100% 0, calc(100% - 14px) 100%, 0 100%)",
+                paddingRight: "calc(1.25rem + 14px)",
+                zIndex: isActive ? 10 : 1,
+                position: "relative",
+                marginBottom: isActive ? "-1px" : "0",
+              }}
+              className={cn([
+                "flex shrink-0 items-center gap-1.5 px-5 py-3.5 text-sm font-medium transition-colors",
+                isActive ? "pb-[calc(0.875rem+1px)]" : "hover:text-neutral-500",
+              ])}
+            >
+              <Icon icon={scenario.icon} className="text-base" />
+              {scenario.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Content block */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeId}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18 }}
+          style={{
+            backgroundColor: activeColor.bg,
+            borderColor: activeColor.border,
+          }}
+          className="relative z-0 grid gap-8 rounded-tr-xl rounded-b-xl border px-8 py-16 md:grid-cols-2"
+        >
+          <div className="flex flex-col gap-4">
+            <h3 className="font-mono text-xl leading-snug text-neutral-800 md:text-2xl">
+              {active.headline}
+            </h3>
+            <p className="text-sm leading-relaxed text-neutral-500">
+              {active.description}
+            </p>
+            <Link
+              to={active.link as "/solution/sales/"}
+              className="mt-auto flex items-center gap-1 text-sm text-neutral-700 underline underline-offset-2 hover:text-neutral-900"
+            >
+              Learn more
+              <Icon icon="mdi:arrow-top-right" className="text-sm" />
+            </Link>
+          </div>
+
+          <ul className="flex flex-col justify-center gap-4">
+            {active.bullets.map((bullet) => (
+              <li key={bullet} className="flex items-start gap-3">
+                <span
+                  className="mt-1 size-1.5 shrink-0 rounded-full"
+                  style={{ backgroundColor: activeColor.accent }}
+                />
+                <span className="text-sm leading-relaxed text-neutral-600">
+                  {bullet}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+      </AnimatePresence>
+    </section>
+  );
+}
+
 function FAQSection() {
   return (
-    <section className="laptop:px-0 px-4 py-16">
-      <div className="mx-auto max-w-4xl">
-        <div className="mb-12 text-center">
-          <h2 className="mb-4 font-serif text-3xl text-stone-700">
+    <section id="faq" className="laptop:px-4 py-16">
+      <div className="mx-auto flex flex-row gap-16">
+        <div className="mb-12 text-left">
+          <h2 className="mb-4 font-mono text-2xl tracking-wide text-neutral-700 md:text-4xl">
             Frequently Asked Questions
           </h2>
         </div>
@@ -1622,90 +2059,6 @@ function FAQSection() {
   );
 }
 
-function ManifestoSection() {
-  return (
-    <section className="laptop:px-0 bg-[linear-gradient(to_right,#f5f5f5_1px,transparent_1px),linear-gradient(to_bottom,#f5f5f5_1px,transparent_1px)] bg-size-[24px_24px] bg-position-[12px_12px,12px_12px] px-4 py-16">
-      <div className="mx-auto max-w-4xl">
-        <div
-          className="border border-neutral-200 p-4"
-          style={{
-            backgroundImage: "url(/api/images/texture/white-leather.png)",
-          }}
-        >
-          <div
-            className="rounded-xs border border-neutral-200 bg-stone-50 p-8 sm:p-12"
-            style={{
-              backgroundImage: "url(/api/images/texture/paper.png)",
-            }}
-          >
-            <h2 className="mb-4 font-serif text-2xl text-stone-700 sm:text-3xl">
-              Our manifesto
-            </h2>
-
-            <div className="flex flex-col gap-4 leading-relaxed text-neutral-700">
-              <p>
-                We believe in the power of notetaking, not notetakers. Meetings
-                should be moments of presence, not passive attendance. If you
-                are not adding value, your time is better spent elsewhere for
-                you and your team.
-              </p>
-              <p>
-                Char exists to preserve what makes us human: conversations that
-                spark ideas, collaborations that move work forward. We build
-                tools that amplify human agency, not replace it. No ghost bots.
-                No silent note lurkers. Just people, thinking together.
-              </p>
-              <p>
-                We stand with those who value real connection and purposeful
-                collaboration.
-              </p>
-            </div>
-
-            <div className="mt-12 mb-4 flex gap-2">
-              <Image
-                src="/api/images/team/john.png"
-                alt="John Jeong"
-                width={32}
-                height={32}
-                className="rounded-full border border-neutral-200 object-cover"
-              />
-              <Image
-                src="/api/images/team/yujong.png"
-                alt="Yujong Lee"
-                width={32}
-                height={32}
-                className="rounded-full border border-neutral-200 object-cover"
-              />
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <div>
-                <p className="font-serif text-base font-medium text-neutral-600 italic">
-                  Char
-                </p>
-                <p className="text-sm text-neutral-500">
-                  John Jeong, Yujong Lee
-                </p>
-              </div>
-
-              <div>
-                <Image
-                  src="/char-signature.svg"
-                  alt="Char Signature"
-                  width={124}
-                  height={60}
-                  layout="constrained"
-                  className="object-contain opacity-80"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function BlogSection() {
   const sortedArticles = [...allArticles]
     .sort((a, b) => {
@@ -1720,12 +2073,12 @@ function BlogSection() {
   }
 
   return (
-    <section className="border-t border-neutral-100 py-16">
-      <div className="mb-12 px-4 text-center">
-        <h2 className="mb-4 font-serif text-3xl text-stone-700">
+    <section id="blog" className="border-t border-neutral-100 py-16">
+      <div className="mb-12 px-4 text-left">
+        <h2 className="mb-2 font-mono text-2xl tracking-wide text-neutral-700 md:text-4xl">
           Latest from our blog
         </h2>
-        <p className="mx-auto max-w-lg text-neutral-600">
+        <p className="text-neutral-600">
           Insights, updates, and stories from the Char team
         </p>
       </div>
@@ -1753,7 +2106,7 @@ function BlogSection() {
                 </div>
 
                 <div className="flex flex-1 flex-col p-6">
-                  <h3 className="mb-2 line-clamp-2 font-serif text-xl text-stone-700 transition-colors group-hover:text-stone-800">
+                  <h3 className="mb-2 line-clamp-2 font-mono text-xl text-stone-700 transition-colors group-hover:text-stone-800">
                     {article.display_title || article.meta_title}
                   </h3>
 
@@ -1784,7 +2137,7 @@ function BlogSection() {
         })}
       </div>
 
-      <div className="mt-8 text-center">
+      <div className="mt-8 text-left">
         <Link
           to="/blog/"
           className="inline-flex items-center gap-2 font-medium text-stone-600 transition-colors hover:text-stone-800"
@@ -1848,7 +2201,7 @@ export function CTASection({
 
   return (
     <section className="laptop:px-0 bg-linear-to-t from-stone-50/30 to-stone-100/30 px-4 py-16">
-      <div className="flex flex-col items-center gap-6 text-center">
+      <div className="flex flex-col items-center gap-6 text-left">
         <div className="mb-4 flex size-40 items-center justify-center rounded-[48px] border border-neutral-100 bg-transparent shadow-2xl">
           <Image
             src="/api/images/hyprnote/icon.png"
@@ -1858,7 +2211,7 @@ export function CTASection({
             className="mx-auto size-36 rounded-[40px] border border-neutral-100"
           />
         </div>
-        <h2 className="font-serif text-2xl text-stone-700 sm:text-3xl">
+        <h2 className="font-mono text-2xl tracking-wide text-neutral-700 md:text-4xl">
           Your meetings. Your data.
           <br className="sm:hidden" /> Your control.
         </h2>

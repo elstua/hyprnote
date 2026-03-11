@@ -77,14 +77,11 @@ function Component() {
   const heroInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div
-      className="min-h-screen bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+    <div className="min-h-screen">
+      <div className="mx-auto">
         <div className="px-6 py-12 lg:py-20">
-          <header className="mb-12 text-center">
-            <h1 className="mb-6 font-serif text-4xl text-stone-600 sm:text-5xl lg:text-6xl">
+          <header className="mb-12 text-left">
+            <h1 className="mb-6 font-mono text-4xl text-stone-600 sm:text-5xl lg:text-6xl">
               Product Roadmap
             </h1>
             <p className="mx-auto max-w-2xl text-xl text-neutral-600">
@@ -253,7 +250,7 @@ function CTASection({
 
   return (
     <section className="-mx-6 mt-16 bg-linear-to-t from-stone-50/30 to-stone-100/30 px-6 py-16">
-      <div className="flex flex-col items-center gap-6 text-center">
+      <div className="flex flex-col items-center gap-6 text-left">
         <div className="mb-4 flex size-40 items-center justify-center rounded-[48px] border border-neutral-100 bg-transparent shadow-2xl">
           <Image
             src="/api/images/hyprnote/icon.png"
@@ -263,7 +260,7 @@ function CTASection({
             className="mx-auto size-36 rounded-[40px] border border-neutral-100"
           />
         </div>
-        <h2 className="font-serif text-2xl sm:text-3xl">
+        <h2 className="font-mono text-2xl sm:text-3xl">
           Where conversations
           <br className="sm:hidden" /> stay yours
         </h2>

@@ -27,11 +27,8 @@ export const Route = createFileRoute("/_view/jobs/")({
 
 function JobsPage() {
   return (
-    <div
-      className="min-h-screen bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+    <div className="min-h-screen">
+      <div className="mx-auto">
         <HeroSection />
         <SlashSeparator />
         <JobsSection />
@@ -43,8 +40,8 @@ function JobsPage() {
 function HeroSection() {
   return (
     <div className="px-6 py-16 lg:py-24">
-      <div className="mx-auto max-w-3xl text-center">
-        <h1 className="mb-6 font-serif text-4xl tracking-tight text-stone-700 sm:text-5xl">
+      <div className="mx-auto max-w-3xl text-left">
+        <h1 className="mb-6 font-mono text-4xl tracking-tight text-stone-700 sm:text-5xl">
           Jobs
         </h1>
         <p className="text-lg text-neutral-600 sm:text-xl">
@@ -70,7 +67,7 @@ function JobsSection() {
           ))}
         </div>
       ) : (
-        <div className="px-6 py-16 text-center">
+        <div className="px-6 py-16 text-left">
           <p className="text-lg text-neutral-500">
             There are no open positions at the moment.
           </p>
@@ -128,7 +125,7 @@ function JobCard({
 function CTASection() {
   return (
     <section className="laptop:px-0 bg-linear-to-t from-stone-50/30 to-stone-100/30 px-4 py-16">
-      <div className="flex flex-col items-center gap-6 text-center">
+      <div className="flex flex-col items-center gap-6 text-left">
         <div className="mb-4 flex size-40 items-center justify-center rounded-[48px] border border-neutral-100 bg-transparent shadow-2xl">
           <Image
             src="/api/images/hyprnote/icon.png"
@@ -138,7 +135,7 @@ function CTASection() {
             className="mx-auto size-36 rounded-[40px] border border-neutral-100"
           />
         </div>
-        <h2 className="font-serif text-2xl sm:text-3xl">
+        <h2 className="font-mono text-2xl sm:text-3xl">
           Don't see a role that fits?
         </h2>
         <p className="mx-auto max-w-2xl text-lg text-neutral-600">

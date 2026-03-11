@@ -68,11 +68,8 @@ function Component() {
   };
 
   return (
-    <div
-      className="min-h-screen bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+    <div className="min-h-screen">
+      <div className="mx-auto">
         <HeroSection search={search} onSearchChange={setSearch} />
         <SlashSeparator />
         <FriendsSection
@@ -97,8 +94,8 @@ function HeroSection({
   return (
     <div className="bg-linear-to-b from-stone-50/30 to-stone-100/30">
       <div className="px-6 py-12 lg:py-20">
-        <header className="mx-auto mb-8 max-w-4xl text-center">
-          <h1 className="mb-6 font-serif text-4xl text-stone-700 sm:text-5xl lg:text-6xl">
+        <header className="mx-auto mb-8 max-w-4xl text-left">
+          <h1 className="mb-6 font-mono text-4xl text-stone-700 sm:text-5xl lg:text-6xl">
             OSS Friends
           </h1>
           <p className="mx-auto mb-8 max-w-3xl text-lg leading-relaxed text-neutral-600 sm:text-xl">
@@ -215,8 +212,8 @@ function FriendsSection({
 function JoinSection() {
   return (
     <section className="bg-stone-50/30 px-6 py-12 lg:py-16">
-      <div className="mx-auto max-w-2xl text-center">
-        <h2 className="mb-4 font-serif text-2xl text-stone-700 sm:text-3xl">
+      <div className="mx-auto max-w-2xl text-left">
+        <h2 className="mb-4 font-mono text-2xl text-stone-700 sm:text-3xl">
           Want to be listed?
         </h2>
         <p className="mb-6 text-neutral-600">

@@ -42,11 +42,8 @@ function Component() {
   const { doc } = Route.useLoaderData();
 
   return (
-    <div
-      className="min-h-screen bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white px-4 py-16 sm:px-6 lg:px-8">
+    <div className="min-h-screen">
+      <div className="mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <article className="prose prose-stone prose-lg max-w-none">
           <h1>{doc.title}</h1>
 

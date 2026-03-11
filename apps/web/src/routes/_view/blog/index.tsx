@@ -95,11 +95,8 @@ function Component() {
   );
 
   return (
-    <div
-      className="bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto min-h-screen max-w-6xl border-x border-neutral-100 bg-white">
+    <div>
+      <div className="mx-auto min-h-screen">
         <Header />
         {featuredArticles.length > 0 && (
           <FeaturedSection articles={featuredArticles} />
@@ -136,8 +133,8 @@ function Component() {
 
 function Header() {
   return (
-    <header className="border-b border-neutral-100 bg-linear-to-b from-stone-50/30 to-stone-100/30 py-16 text-center">
-      <h1 className="mb-4 font-serif text-4xl text-stone-600 sm:text-5xl">
+    <header className="border-b border-neutral-100 bg-linear-to-b from-stone-50/30 to-stone-100/30 py-16 text-left">
+      <h1 className="mb-4 font-mono text-4xl text-stone-600 sm:text-5xl">
         Blog
       </h1>
       <p className="mx-auto max-w-2xl px-4 text-lg text-neutral-600">
@@ -328,7 +325,7 @@ function AllArticlesSection({
 }) {
   if (articles.length === 0) {
     return (
-      <div className="py-16 text-center">
+      <div className="py-16 text-left">
         <p className="text-neutral-500">No articles yet. Check back soon!</p>
       </div>
     );
@@ -352,7 +349,7 @@ function AllArticlesSection({
 function SectionHeader({ title }: { title: string }) {
   return (
     <div className="mb-8 flex items-center gap-3">
-      <h2 className="font-serif text-2xl text-stone-600">{title}</h2>
+      <h2 className="font-mono text-2xl text-stone-600">{title}</h2>
       <div className="h-px flex-1 bg-neutral-200" />
     </div>
   );
@@ -399,7 +396,7 @@ function MostRecentFeaturedCard({ article }: { article: Article }) {
           )}
           <h3
             className={cn([
-              "mb-2 font-serif text-xl text-stone-600",
+              "mb-2 font-mono text-xl text-stone-600",
               "line-clamp-2 transition-colors group-hover:text-stone-800",
               "md:mb-3 md:text-2xl",
             ])}
@@ -512,7 +509,7 @@ function OtherFeaturedCard({
           )}
           <h3
             className={cn([
-              "mb-2 font-serif text-base text-stone-600",
+              "mb-2 font-mono text-base text-stone-600",
               "line-clamp-2 transition-colors group-hover:text-stone-800",
             ])}
           >
@@ -571,7 +568,7 @@ function ArticleListItem({ article }: { article: Article }) {
                 {article.category}
               </span>
             )}
-            <span className="truncate font-serif text-base text-stone-600 transition-colors group-hover:text-stone-800">
+            <span className="truncate font-mono text-base text-stone-600 transition-colors group-hover:text-stone-800">
               {article.title}
             </span>
             <div className="hidden shrink-0 items-center gap-3 sm:flex">

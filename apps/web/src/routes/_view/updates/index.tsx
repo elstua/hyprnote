@@ -40,11 +40,8 @@ function Component() {
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
   return (
-    <main
-      className="min-h-screen flex-1 bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+    <main className="min-h-screen flex-1">
+      <div className="mx-auto">
         <div className="px-6 py-16 lg:py-24">
           <HeroSection />
         </div>
@@ -72,8 +69,8 @@ function Component() {
 
 function HeroSection() {
   return (
-    <div className="flex flex-col items-center gap-6 text-center">
-      <h1 className="font-serif text-4xl tracking-tight text-stone-700 sm:text-5xl">
+    <div className="flex flex-col items-center gap-6 text-left">
+      <h1 className="font-mono text-4xl tracking-tight text-stone-700 sm:text-5xl">
         Updates
       </h1>
       <p className="text-lg text-neutral-600 sm:text-xl">
@@ -90,8 +87,8 @@ function HeroSection() {
 
 function SubscribeSection() {
   return (
-    <div className="flex flex-col items-center gap-4 text-center">
-      <h2 className="font-serif text-3xl text-stone-700">
+    <div className="flex flex-col items-center gap-4 text-left">
+      <h2 className="font-mono text-3xl text-stone-700">
         Get updates in your inbox
       </h2>
       <p className="text-neutral-600">
@@ -111,7 +108,7 @@ function UpdateSection({ update }: { update: Update }) {
     <section className="grid grid-cols-1 gap-6 md:grid-cols-[160px_1fr] md:gap-12">
       <div className="flex flex-col gap-1 md:sticky md:top-24 md:self-start">
         <Link to="/updates/$slug/" params={{ slug: update.slug }}>
-          <h2 className="cursor-pointer font-serif text-xl font-medium text-stone-700 transition-colors hover:text-stone-900">
+          <h2 className="cursor-pointer font-mono text-xl font-medium text-stone-700 transition-colors hover:text-stone-900">
             {getWeekLabel(update.date)}
           </h2>
         </Link>
@@ -126,7 +123,7 @@ function UpdateSection({ update }: { update: Update }) {
 
       <div className="min-w-0">
         <div className="relative h-[20rem] overflow-hidden">
-          <article className="prose prose-stone prose-sm prose-headings:font-serif prose-headings:font-semibold prose-h2:text-lg prose-h2:mt-4 prose-h2:mb-2 prose-h3:text-base prose-h3:mt-3 prose-h3:mb-1 prose-ul:my-2 prose-li:my-0.5 prose-a:text-stone-600 prose-a:underline prose-a:decoration-dotted hover:prose-a:text-stone-800 prose-headings:no-underline prose-headings:decoration-transparent prose-code:bg-stone-50 prose-code:border prose-code:border-neutral-200 prose-code:rounded prose-code:px-1 prose-code:py-0.5 prose-code:text-xs prose-code:font-mono prose-code:text-stone-700 prose-img:rounded prose-img:border prose-img:border-neutral-200 prose-img:my-3 max-w-none">
+          <article className="prose prose-stone prose-sm prose-headings:font-mono prose-headings:font-semibold prose-h2:text-lg prose-h2:mt-4 prose-h2:mb-2 prose-h3:text-base prose-h3:mt-3 prose-h3:mb-1 prose-ul:my-2 prose-li:my-0.5 prose-a:text-stone-600 prose-a:underline prose-a:decoration-dotted hover:prose-a:text-stone-800 prose-headings:no-underline prose-headings:decoration-transparent prose-code:bg-stone-50 prose-code:border prose-code:border-neutral-200 prose-code:rounded prose-code:px-1 prose-code:py-0.5 prose-code:text-xs prose-code:font-mono prose-code:text-stone-700 prose-img:rounded prose-img:border prose-img:border-neutral-200 prose-img:my-3 max-w-none">
             <MDXContent code={update.mdx} components={defaultMDXComponents} />
           </article>
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-white via-white/90 to-transparent" />

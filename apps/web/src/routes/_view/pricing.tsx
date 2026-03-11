@@ -94,11 +94,9 @@ const pricingPlans: PricingPlan[] = [
 
 function Component() {
   return (
-    <main
-      className="min-h-screen flex-1 bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+    <main className="min-h-screen flex-1">
+      <div className="mx-auto">
+        <TeamPricingBanner />
         <HeroSection />
         <SlashSeparator />
         <PricingCardsSection />
@@ -111,11 +109,31 @@ function Component() {
   );
 }
 
+function TeamPricingBanner() {
+  return (
+    <div
+      className={cn([
+        "flex items-center justify-center gap-2 text-left",
+        "border-b border-stone-100 bg-stone-50/70",
+        "px-4 py-3",
+        "font-mono text-sm text-stone-700",
+      ])}
+    >
+      <span>
+        <strong>Early Bird Discount:</strong> Get 68% off as we launch our new
+        version and help with migration —{" "}
+        <strong>offer extended while we finalize the new timeline</strong>
+      </span>
+    </div>
+  );
+}
+
+
 function HeroSection() {
   return (
-    <section className="laptop:px-0 flex flex-col items-center gap-6 border-b border-neutral-100 px-4 py-24 text-center">
+    <section className="laptop:px-0 flex flex-col items-center gap-6 border-b border-neutral-100 px-4 py-24 text-left">
       <div className="flex max-w-3xl flex-col gap-4">
-        <h1 className="font-serif text-4xl tracking-tight text-stone-700 sm:text-5xl">
+        <h1 className="font-mono text-4xl tracking-tight text-stone-700 sm:text-5xl">
           Pricing
         </h1>
         <p className="text-lg text-neutral-600 sm:text-xl">
@@ -149,14 +167,14 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
       ])}
     >
       {plan.popular && (
-        <div className="bg-stone-600 px-4 py-2 text-center text-sm font-medium text-white">
+        <div className="bg-stone-600 px-4 py-2 text-left text-sm font-medium text-white">
           Most Popular
         </div>
       )}
 
       <div className="flex flex-1 flex-col p-8">
         <div className="mb-6">
-          <h2 className="mb-2 font-serif text-2xl text-stone-700">
+          <h2 className="mb-2 font-mono text-2xl text-stone-700">
             {plan.name}
           </h2>
           <p className="mb-4 text-sm text-neutral-600">{plan.description}</p>
@@ -164,7 +182,7 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
           {plan.price ? (
             <div className="flex flex-col gap-2">
               <div className="flex items-baseline gap-2">
-                <span className="font-serif text-4xl text-stone-700">
+                <span className="font-mono text-4xl text-stone-700">
                   ${plan.price.monthly}
                 </span>
                 <span className="text-neutral-600">/month</span>
@@ -174,7 +192,7 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
               </div>
             </div>
           ) : (
-            <div className="font-serif text-4xl text-stone-700">Free</div>
+            <div className="font-mono text-4xl text-stone-700">Free</div>
           )}
         </div>
 
@@ -313,7 +331,7 @@ function FAQSection() {
   return (
     <section className="laptop:px-0 border-t border-neutral-100 px-4 py-16">
       <div className="mx-auto max-w-3xl">
-        <h2 className="mb-16 text-center font-serif text-3xl text-stone-700">
+        <h2 className="mb-16 text-left font-mono text-3xl text-stone-700">
           Frequently Asked Questions
         </h2>
         <div className="flex flex-col gap-6">
@@ -337,7 +355,7 @@ function FAQSection() {
 function CTASection() {
   return (
     <section className="laptop:px-0 border-t border-neutral-100 bg-linear-to-t from-stone-50/30 to-stone-100/30 px-4 py-16">
-      <div className="flex flex-col items-center gap-6 text-center">
+      <div className="flex flex-col items-center gap-6 text-left">
         <div className="mb-4 flex size-40 items-center justify-center rounded-[48px] border border-neutral-100 bg-transparent shadow-2xl">
           <Image
             src="/api/images/hyprnote/icon.png"
@@ -347,7 +365,7 @@ function CTASection() {
             className="mx-auto size-36 rounded-[40px] border border-neutral-100"
           />
         </div>
-        <h2 className="font-serif text-2xl sm:text-3xl">Need a team plan?</h2>
+        <h2 className="font-mono text-2xl sm:text-3xl">Need a team plan?</h2>
         <p className="mx-auto max-w-2xl text-lg text-neutral-600">
           Book a call to discuss custom team pricing and enterprise solutions
         </p>

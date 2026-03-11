@@ -58,11 +58,8 @@ function Component() {
   const heroInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div
-      className="min-h-screen bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+    <div className="min-h-screen">
+      <div className="mx-auto">
         <HeroSection />
         <SlashSeparator />
         <LetterSection />
@@ -141,8 +138,8 @@ function HeroSection() {
       {stargazers.length > 0 && <StargazersGrid stargazers={stargazers} />}
       <div className="relative z-10 px-6 py-12 lg:py-20">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_800px_400px_at_50%_50%,white_0%,rgba(255,255,255,0.8)_40%,transparent_70%)]" />
-        <header className="relative mx-auto max-w-4xl py-6 text-center">
-          <h1 className="mb-6 font-serif text-4xl text-stone-700 sm:text-5xl lg:text-6xl">
+        <header className="relative mx-auto max-w-4xl py-6 text-left">
+          <h1 className="mb-6 font-mono text-4xl text-stone-700 sm:text-5xl lg:text-6xl">
             Built in the open,
             <br />
             for everyone
@@ -178,14 +175,14 @@ function LetterSection() {
   return (
     <section className="bg-[linear-gradient(to_right,#fafafa_1px,transparent_1px),linear-gradient(to_bottom,#fafafa_1px,transparent_1px)] bg-size-[24px_24px] bg-position-[12px_12px,12px_12px] px-6 py-16 lg:py-24">
       <div className="mx-auto max-w-3xl">
-        <div className="mb-8 text-center">
+        <div className="mb-8 text-left">
           <span className="font-mono text-sm font-medium tracking-widest text-neutral-500 uppercase">
             A letter from our team
           </span>
         </div>
 
         <article>
-          <h1 className="mb-12 text-center font-serif text-3xl text-stone-700 sm:text-4xl lg:text-5xl">
+          <h1 className="mb-12 text-left font-mono text-3xl text-stone-700 sm:text-4xl lg:text-5xl">
             Why Open Source is Inevitable
             <br />
             in the Age of AI
@@ -425,10 +422,10 @@ function TechStackSection() {
     <section>
       <div>
         <div className="py-12 lg:py-16">
-          <h2 className="mb-4 text-center font-serif text-3xl text-stone-700">
+          <h2 className="mb-4 text-left font-mono text-3xl text-stone-700">
             Our Tech Stack
           </h2>
-          <p className="mx-auto max-w-2xl text-center text-neutral-600">
+          <p className="mx-auto max-w-2xl text-left text-neutral-600">
             Built with modern, privacy-respecting technologies that run locally
             on your device.
           </p>
@@ -439,7 +436,7 @@ function TechStackSection() {
             return (
               <Fragment key={section.category}>
                 <div className="col-span-6 border-t border-b border-neutral-100 bg-stone-50/50 p-6">
-                  <h3 className="font-serif text-xl text-stone-700">
+                  <h3 className="font-mono text-xl text-stone-700">
                     {section.category}
                   </h3>
                 </div>
@@ -518,10 +515,10 @@ function SponsorsSection() {
     <section>
       <div>
         <div className="py-12 lg:py-16">
-          <h2 className="mb-4 text-center font-serif text-3xl text-stone-700">
+          <h2 className="mb-4 text-left font-mono text-3xl text-stone-700">
             Paying It Forward
           </h2>
-          <p className="mx-auto max-w-2xl text-center text-neutral-600">
+          <p className="mx-auto max-w-2xl text-left text-neutral-600">
             We love giving back to the community that makes Char possible. As we
             grow, we hope to sponsor even more projects and creators.
           </p>
@@ -529,7 +526,7 @@ function SponsorsSection() {
 
         <div className="grid grid-cols-6">
           <div className="col-span-6 border-t border-b border-neutral-100 bg-stone-50/50 p-6">
-            <h3 className="font-serif text-xl text-stone-700">
+            <h3 className="font-mono text-xl text-stone-700">
               Projects We Sponsor
             </h3>
           </div>
@@ -576,7 +573,7 @@ function SponsorsSection() {
           })}
           <div className="col-span-6 flex flex-col gap-4 border-t border-neutral-100 bg-stone-50/50 p-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h3 className="font-serif text-xl text-stone-700">
+              <h3 className="font-mono text-xl text-stone-700">
                 We Appreciate Your Support
               </h3>
               <p className="mt-2 text-sm text-neutral-600">
@@ -689,7 +686,7 @@ function StatCard({
   return (
     <div
       className={cn([
-        "relative flex h-32 flex-col justify-between gap-3 border-neutral-100 p-6 text-center",
+        "relative flex h-32 flex-col justify-between gap-3 border-neutral-100 p-6 text-left",
         hasBorder && "border-r",
       ])}
       onMouseEnter={() => setIsHovered(true)}
@@ -761,10 +758,10 @@ function ProgressSection() {
     <section>
       <div>
         <div className="py-12 lg:py-16">
-          <h2 className="mb-4 text-center font-serif text-3xl text-stone-700">
+          <h2 className="mb-4 text-left font-mono text-3xl text-stone-700">
             How We're Doing
           </h2>
-          <p className="mx-auto max-w-2xl text-center text-neutral-600">
+          <p className="mx-auto max-w-2xl text-left text-neutral-600">
             Our progress is measured by the community we're building together.
           </p>
         </div>
@@ -837,10 +834,10 @@ function JoinMovementSection() {
     <section className="bg-stone-50/30">
       <div>
         <div className="px-6 py-12 lg:py-16">
-          <h2 className="mb-4 text-center font-serif text-3xl text-stone-700">
+          <h2 className="mb-4 text-left font-mono text-3xl text-stone-700">
             Be Part of the Movement
           </h2>
-          <p className="mx-auto max-w-2xl text-center text-neutral-600">
+          <p className="mx-auto max-w-2xl text-left text-neutral-600">
             Every contribution, no matter how small, helps build a more private
             future for AI.
           </p>

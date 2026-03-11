@@ -30,13 +30,10 @@ export const Route = createFileRoute("/_view/legal/")({
 
 function Component() {
   return (
-    <div
-      className="min-h-screen bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white px-4 py-16 sm:px-6 lg:px-8">
+    <div className="min-h-screen">
+      <div className="mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <header className="mb-12">
-          <h1 className="mb-4 font-serif text-4xl text-stone-700 sm:text-5xl">
+          <h1 className="mb-4 font-mono text-4xl text-stone-700 sm:text-5xl">
             Legal
           </h1>
           <p className="text-lg text-neutral-600">
@@ -68,7 +65,7 @@ function LegalCard({ doc }: { doc: (typeof allLegals)[number] }) {
             className="mt-0.5 shrink-0 text-xl text-stone-700 transition-colors group-hover:text-stone-800"
           />
           <div className="min-w-0 flex-1">
-            <h3 className="mb-2 font-serif text-lg text-stone-700 transition-colors group-hover:text-stone-800">
+            <h3 className="mb-2 font-mono text-lg text-stone-700 transition-colors group-hover:text-stone-800">
               {doc.title}
             </h3>
             <p className="line-clamp-2 text-sm text-neutral-500">

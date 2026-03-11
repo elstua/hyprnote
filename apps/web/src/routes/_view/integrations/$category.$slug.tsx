@@ -70,11 +70,8 @@ function Component() {
   };
 
   return (
-    <div
-      className="min-h-screen bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+    <div className="min-h-screen">
+      <div className="mx-auto">
         <HeroSection
           platformIcon={doc.icon}
           platformName={doc.platform}
@@ -119,7 +116,7 @@ function HeroSection({
 }) {
   return (
     <div className="bg-linear-to-b from-stone-50/30 to-stone-100/30 px-6 py-12 lg:py-20">
-      <header className="mx-auto max-w-4xl text-center">
+      <header className="mx-auto max-w-4xl text-left">
         <div className="mb-12 flex items-center justify-center">
           <div className="flex size-32 items-center justify-center rounded-[36px] border border-neutral-100 bg-white shadow-2xl">
             <img
@@ -140,7 +137,7 @@ function HeroSection({
           </div>
         </div>
 
-        <h1 className="mb-6 font-serif text-3xl tracking-tight text-stone-700 sm:text-4xl lg:text-5xl">
+        <h1 className="mb-6 font-mono text-3xl tracking-tight text-stone-700 sm:text-4xl lg:text-5xl">
           {headline}
         </h1>
         <p className="mb-8 text-lg text-neutral-600 sm:text-xl">

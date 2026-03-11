@@ -156,11 +156,8 @@ function Component() {
   }, [filteredItems]);
 
   return (
-    <div
-      className="min-h-screen bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+    <div className="min-h-screen">
+      <div className="mx-auto">
         <ContributeBanner />
         <HeroSection
           searchQuery={searchQuery}
@@ -195,10 +192,10 @@ function ContributeBanner() {
       target="_blank"
       rel="noopener noreferrer"
       className={cn([
-        "group flex cursor-pointer items-center justify-center gap-2 text-center",
+        "group flex cursor-pointer items-center justify-center gap-2 text-left",
         "border-b border-stone-100 bg-stone-50/70 hover:bg-stone-100/70",
         "px-4 py-3",
-        "font-serif text-sm text-stone-700",
+        "font-mono text-sm text-stone-700",
         "transition-colors",
       ])}
     >
@@ -227,9 +224,9 @@ function HeroSection({
 }) {
   return (
     <div className="bg-linear-to-b from-stone-50/30 to-stone-100/30">
-      <section className="laptop:px-0 flex flex-col items-center gap-8 px-4 py-24 text-center">
+      <section className="laptop:px-0 flex flex-col items-center gap-8 px-4 py-24 text-left">
         <div className="flex max-w-3xl flex-col gap-6">
-          <h1 className="font-serif text-4xl tracking-tight text-stone-700 sm:text-5xl">
+          <h1 className="font-mono text-4xl tracking-tight text-stone-700 sm:text-5xl">
             Gallery
           </h1>
           <p className="text-lg text-neutral-600 sm:text-xl">
@@ -280,7 +277,7 @@ function HeroSection({
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-white px-4 py-2.5 text-center text-sm outline-hidden placeholder:text-center"
+              className="flex-1 bg-white px-4 py-2.5 text-left text-sm outline-hidden placeholder:text-left"
             />
           </div>
         </div>
@@ -291,8 +288,8 @@ function HeroSection({
 
 function QuoteSection() {
   return (
-    <div className="border-y border-neutral-100 bg-white bg-[linear-gradient(to_right,#f5f5f5_1px,transparent_1px),linear-gradient(to_bottom,#f5f5f5_1px,transparent_1px)] bg-size-[24px_24px] bg-position-[12px_12px,12px_12px] px-4 py-4 text-center">
-      <p className="font-serif text-base text-stone-700 italic">
+    <div className="border-y border-neutral-100 bg-white bg-[linear-gradient(to_right,#f5f5f5_1px,transparent_1px),linear-gradient(to_bottom,#f5f5f5_1px,transparent_1px)] bg-size-[24px_24px] bg-position-[12px_12px,12px_12px] px-4 py-4 text-left">
+      <p className="font-mono text-base text-stone-700 italic">
         "Curated by Char and the community"
       </p>
     </div>
@@ -431,7 +428,7 @@ function GalleryGrid({ filteredItems }: { filteredItems: GalleryItem[] }) {
   if (filteredItems.length === 0) {
     return (
       <section className="min-w-0 flex-1">
-        <div className="py-12 text-center">
+        <div className="py-12 text-left">
           <Icon
             icon="mdi:file-search"
             className="mx-auto mb-4 text-6xl text-neutral-300"
@@ -472,7 +469,7 @@ function ItemCard({ item }: { item: GalleryItem }) {
           <span className="mx-1">/</span>
           <span>{item.item.category}</span>
         </p>
-        <h3 className="mb-1 font-serif text-lg text-stone-700 transition-colors group-hover:text-stone-800">
+        <h3 className="mb-1 font-mono text-lg text-stone-700 transition-colors group-hover:text-stone-800">
           {item.item.title}
         </h3>
         <p className="line-clamp-2 text-sm text-neutral-600">
@@ -497,8 +494,8 @@ function ItemCard({ item }: { item: GalleryItem }) {
 
 function ContributeCard() {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xs border border-dashed border-neutral-300 bg-stone-50/50 p-4 text-center">
-      <h3 className="mb-2 font-serif text-lg text-stone-700">Contribute</h3>
+    <div className="flex flex-col items-center justify-center rounded-xs border border-dashed border-neutral-300 bg-stone-50/50 p-4 text-left">
+      <h3 className="mb-2 font-mono text-lg text-stone-700">Contribute</h3>
       <p className="mb-4 text-sm text-neutral-500">
         Have an idea? Submit a PR and help the community.
       </p>
@@ -522,9 +519,9 @@ function ContributeCard() {
 
 function CTASection() {
   return (
-    <section className="px-6 py-16 text-center">
+    <section className="px-6 py-16 text-left">
       <div className="mx-auto flex max-w-2xl flex-col gap-6">
-        <h2 className="font-serif text-3xl text-stone-700 sm:text-4xl">
+        <h2 className="font-mono text-3xl text-stone-700 sm:text-4xl">
           Ready to transform your meetings?
         </h2>
         <p className="text-lg text-neutral-600">

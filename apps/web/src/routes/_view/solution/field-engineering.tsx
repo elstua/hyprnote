@@ -96,11 +96,8 @@ const useCases = [
 
 function Component() {
   return (
-    <div
-      className="min-h-screen overflow-x-hidden bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+    <div className="min-h-screen overflow-x-hidden">
+      <div className="mx-auto">
         <HeroSection />
         <FeaturesSection />
         <UseCasesSection />
@@ -114,12 +111,12 @@ function HeroSection() {
   return (
     <div className="bg-linear-to-b from-stone-50/30 to-stone-100/30">
       <div className="px-6 py-12 lg:py-20">
-        <header className="mx-auto mb-8 max-w-4xl text-center">
+        <header className="mx-auto mb-8 max-w-4xl text-left">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-stone-100 px-4 py-2 text-sm text-stone-700">
             <Icon icon="mdi:tools" className="text-lg" />
             <span>For Field Engineering</span>
           </div>
-          <h1 className="mb-6 font-serif text-4xl tracking-tight text-stone-700 sm:text-5xl">
+          <h1 className="mb-6 font-mono text-4xl tracking-tight text-stone-700 sm:text-5xl">
             Capture technical details
             <br />
             anywhere you work
@@ -160,10 +157,10 @@ function FeaturesSection() {
   return (
     <section className="border-t border-neutral-100 px-6 py-16">
       <div className="mx-auto max-w-4xl">
-        <h2 className="mb-4 text-center font-serif text-3xl text-stone-700">
+        <h2 className="mb-4 text-left font-mono text-3xl text-stone-700">
           Built for field engineers
         </h2>
-        <p className="mx-auto mb-12 max-w-2xl text-center text-neutral-600">
+        <p className="mx-auto mb-12 max-w-2xl text-left text-neutral-600">
           Every feature designed for technical work in the field.
         </p>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -190,10 +187,10 @@ function UseCasesSection() {
   return (
     <section className="border-t border-neutral-100 bg-stone-50/50 px-6 py-16">
       <div className="mx-auto max-w-4xl">
-        <h2 className="mb-4 text-center font-serif text-3xl text-stone-700">
+        <h2 className="mb-4 text-left font-mono text-3xl text-stone-700">
           For every field engagement
         </h2>
-        <p className="mx-auto mb-12 max-w-2xl text-center text-neutral-600">
+        <p className="mx-auto mb-12 max-w-2xl text-left text-neutral-600">
           From implementations to support calls, capture what matters most.
         </p>
         <div className="grid gap-6 md:grid-cols-2">
@@ -219,8 +216,8 @@ function UseCasesSection() {
 function CTASection() {
   return (
     <section className="border-t border-neutral-100 px-6 py-16">
-      <div className="mx-auto max-w-2xl text-center">
-        <h2 className="mb-4 font-serif text-3xl text-stone-700">
+      <div className="mx-auto max-w-2xl text-left">
+        <h2 className="mb-4 font-mono text-3xl text-stone-700">
           Ready to improve field documentation?
         </h2>
         <p className="mb-8 text-neutral-600">

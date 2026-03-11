@@ -40,14 +40,11 @@ export const Route = createFileRoute("/_view/press-kit/")({
 
 function Component() {
   return (
-    <div
-      className="min-h-screen bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+    <div className="min-h-screen">
+      <div className="mx-auto">
         <div className="px-6 py-16 lg:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="mb-6 font-serif text-4xl tracking-tight text-stone-700 sm:text-5xl">
+          <div className="mx-auto max-w-3xl text-left">
+            <h1 className="mb-6 font-mono text-4xl tracking-tight text-stone-700 sm:text-5xl">
               Press Kit
             </h1>
             <p className="text-lg text-neutral-600 sm:text-xl">
@@ -155,7 +152,7 @@ function FinderFolder({
     <Link
       to={to}
       className={cn([
-        "group flex flex-col items-center rounded-lg p-4 text-center",
+        "group flex flex-col items-center rounded-lg p-4 text-left",
         "transition-colors hover:bg-stone-50",
         "cursor-pointer",
       ])}
@@ -214,7 +211,7 @@ function FinderAction({
   );
 
   const className = cn([
-    "group flex flex-col items-center rounded-lg p-4 text-center",
+    "group flex flex-col items-center rounded-lg p-4 text-left",
     "transition-colors hover:bg-stone-50",
     "cursor-pointer",
   ]);

@@ -39,11 +39,8 @@ function Component() {
   const heroInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div
-      className="min-h-screen bg-linear-to-b from-white via-stone-50/20 to-white"
-      style={{ backgroundImage: "url(/patterns/dots.svg)" }}
-    >
-      <div className="mx-auto max-w-6xl border-x border-neutral-100 bg-white">
+    <div className="min-h-screen">
+      <div className="mx-auto">
         <HeroSection />
         <SlashSeparator />
         <WhyWereDifferentSection />
@@ -64,8 +61,8 @@ function HeroSection() {
   return (
     <div className="bg-linear-to-b from-stone-50/30 to-stone-100/30">
       <div className="px-6 py-16 lg:py-24">
-        <div className="mx-auto max-w-3xl text-center">
-          <h1 className="mb-8 font-serif text-4xl tracking-tight text-stone-700 sm:text-5xl lg:text-6xl">
+        <div className="mx-auto max-w-3xl text-left">
+          <h1 className="mb-8 font-mono text-4xl tracking-tight text-stone-700 sm:text-5xl lg:text-6xl">
             Why Char exists
           </h1>
           <p className="mb-6 text-lg leading-relaxed text-neutral-600 sm:text-xl">
@@ -116,7 +113,7 @@ function WhyWereDifferentSection() {
   return (
     <section className="bg-stone-50/30 px-6 py-16 lg:py-24">
       <div className="mx-auto max-w-4xl">
-        <h2 className="mb-12 text-center font-serif text-3xl text-stone-700 sm:text-4xl">
+        <h2 className="mb-12 text-left font-mono text-3xl text-stone-700 sm:text-4xl">
           So we built Char to give you back control.
         </h2>
 
@@ -203,7 +200,7 @@ function WhoThisIsForSection() {
   return (
     <section className="px-6 py-16 lg:py-24">
       <div className="mx-auto max-w-4xl">
-        <h2 className="mb-4 text-center font-serif text-3xl text-stone-700 sm:text-4xl">
+        <h2 className="mb-4 text-left font-mono text-3xl text-stone-700 sm:text-4xl">
           Char's for you, if
         </h2>
 
@@ -248,7 +245,7 @@ function WhatWereBuildingTowardSection() {
               backgroundImage: "url(/api/images/texture/paper.png)",
             }}
           >
-            <h2 className="mb-4 font-serif text-2xl text-stone-700 sm:text-3xl">
+            <h2 className="mb-4 font-mono text-2xl text-stone-700 sm:text-3xl">
               What we're building toward
             </h2>
 
@@ -294,7 +291,7 @@ function WhatWereBuildingTowardSection() {
 
             <div className="flex flex-col gap-4">
               <div>
-                <p className="font-serif text-base font-medium text-neutral-600 italic">
+                <p className="font-mono text-base font-medium text-neutral-600 italic">
                   Char
                 </p>
                 <p className="text-sm text-neutral-500">
@@ -332,7 +329,7 @@ function HereForTheLongHaulSection() {
   return (
     <section className="px-6 py-16 lg:py-24">
       <div className="mx-auto max-w-3xl">
-        <h2 className="mb-8 text-center font-serif text-3xl text-stone-700 sm:text-4xl">
+        <h2 className="mb-8 text-left font-mono text-3xl text-stone-700 sm:text-4xl">
           Here for the long haul
         </h2>
 

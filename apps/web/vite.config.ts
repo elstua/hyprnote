@@ -39,7 +39,9 @@ const config = defineConfig(() => ({
     generateSitemap(getSitemap()),
     process.env.SKIP_NETLIFY === "1"
       ? null
-      : netlify({ dev: { images: { enabled: true } } }),
+      : netlify({
+          dev: { images: { enabled: true }, edgeFunctions: { enabled: false } },
+        }),
   ],
   ssr: {
     noExternal: [
