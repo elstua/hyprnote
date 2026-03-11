@@ -772,27 +772,24 @@ export function HowItWorksSection() {
           {/* upload existing recordings */}
           <div className="group border-brand flex flex-col justify-between gap-8 px-8">
             <div className="flex h-16 flex-wrap items-center gap-2">
-              {[
-                "1:1 Meeting",
-                "Sales Call",
-                "Sprint Planning",
-                "Interview",
-              ].map((wf) => (
-                <div
-                  key={wf}
-                  className="rounded-md border border-neutral-200 bg-stone-50 px-2 py-1 text-xs text-neutral-500"
-                >
-                  {wf}
-                </div>
-              ))}
+              {["Claude cowork", "Openclaw", "Codex", "Claude Code"].map(
+                (wf) => (
+                  <div
+                    key={wf}
+                    className="rounded-md border border-neutral-200 bg-stone-50 px-2 py-1 text-xs text-neutral-500"
+                  >
+                    {wf}
+                  </div>
+                ),
+              )}
             </div>
             <div className="flex min-h-[240px] flex-col justify-end gap-2">
               <h4 className="mb-4 font-mono text-2xl font-medium text-stone-700">
                 Create <br /> any workflow
               </h4>
               <p className="text-base text-neutral-700">
-                Build templates for every meeting type. Char adapts to how you
-                work.
+                Char is fully avaliable to any agent because of it's
+                markdown-first nature
               </p>
             </div>
           </div>
